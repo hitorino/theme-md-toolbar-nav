@@ -24,19 +24,6 @@ function extendWidget(superName, subName, opts) {
     return api.createWidget(subName, _.extends({}, opts, api.reopenWidget(superName, {})));
 }
 
-const GlobalState = Ember.Object.extend({
-    currentPath: document.location.pathname,
-    currentToolbar: null,
-    showSearchbar: false
-});
-
-const globalState = GlobalState.create()
-
-api.onPageChange((url, title)=> {
-    globalState.set('currentPath', url)
-    const appEvents = api.container.lookup('app-events:main');
-    appEvents.trigger('msktheme:page-change')
-})
 
 function aClickHandler(e) {
     if (!e) {
@@ -52,10 +39,37 @@ function aClickHandler(e) {
     return true;
 }
 
-if (Discourse.User.current()) {
-    Discourse.User.current().findDetails()
+function clickActionHandler(e) {
+    if (!e) {
+        return true;
+    } else if ($(e.target).is(`${this.tagName}, ${this.tagName} *`)) {
+        e.preventDefault();
+        return this.clickAction(e);
+    } else {
+        return aClickHandler(e);
+    }
 }
 
+if (Discourse.User.current()) {
+    Discourse.User.current().findDetails();
+}
+
+
+window.onMDNavDrawerToggled = function(isOpen) {};const GlobalState = Ember.Object.extend({
+    currentPath: document.location.pathname,
+    currentToolbar: null,
+    showSearchbar: false,
+    showNavDrawer: false
+});
+
+const globalState = GlobalState.create();
+
+
+api.onPageChange((url, title)=> {
+    globalState.set('currentPath', url)
+    const appEvents = api.container.lookup('app-events:main');
+    appEvents.trigger('msktheme:page-change')
+});
 function getCurrentPath() {
     return globalState.get('currentPath')
 }
@@ -95,78 +109,6 @@ globalState.addObserver('showSearchbar', function() {
     globalState.set('currentToolbar', getCurrentToolbar())
 })
 
-const MainToolbarTemplate = {
-    toolbarName: 'template',
-    buildClasses() {
-        return ['left']
-    },
-    changeToolbar(name) {
-        globalState.set('currentToolbar', name)
-    }
-}
-
-api.createWidget('mdmaintoolbar-search-button', {
-	tagName: 'div#search-button.md-button.right',
-	buildClasses() {
-	    if (globalState.get('showSearchbar')) {
-	        return ['active']
-	    } else {
-	        return []
-	    }
-	},
-	html() {
-        if (!globalState.get('showSearchbar')) {
-		    return mdIcon('magnify')
-        } else {
-            return mdIcon('close')
-        }
-	},
-
-    click(e) {
-        if (!e) {
-            return true;
-        } else if (e.type === 'click') {
-            e.preventDefault();
-         	globalState.set('showSearchbar', !globalState.get('showSearchbar'))
-            return false;
-        } else {
-            return true;
-        }
-    }
-})
-
-api.createWidget('mdmaintoolbar-search', _.extend({}, {
-    tagName: 'form#md-searchbar.mdmaintoolbar.center',
-    buildAttributes() {
-        return {
-            action: '/search',
-            method: 'GET'
-        }
-    },
-    html(attr, state) {
-        if (!globalState.get('showSearchbar')) {
-            return false
-        }
-        return [
-            api.h('input#input-box.toolbar-title.center', {
-                name: 'q',
-                type: 'text',
-                placeholder: '搜索 hitorino'
-            }, [])
-        ];
-    },
-    click(e) {
-        if (!e) {
-            return true;
-        } else if (e.type === 'click' && $(e.target).is('#close, #close *')) {
-            e.preventDefault();
-            globalState.set('showSearchbar', false)
-            return false;
-        } else {
-            return true;
-        }
-    }
-}, MainToolbarTemplate))
 
 function getCategoryNameBySlug(slug) {
     const site = Discourse.Site.current()
@@ -205,19 +147,93 @@ function getTitle() {
     return undefined
 }
 
-api.createWidget('mdmaintoolbar-topic-list', _.extend({}, {
-    tagName: 'div#md-topic-list.mdmaintoolbar.md-title.left',
+function getUser() {
+    var user = Discourse.User.current();
+    const navbar_background_default = "https://forum.hitorino.moe/uploads/default/original/1X/6e3efd0a3b368ef708e1b70c550359f01f701f50.png";
+    if (!user) {
+        user = {
+            get(key) {
+                switch (key) {
+                    case 'navbar_background':
+                        return navbar_background_default;
+                    case 'username':
+                        return 'hitorino';
+                    case 'name':
+                        return '未登录';
+                    case 'unread_notifications':
+                    case 'unread_private_messages':
+                        return 0;
+                    case 'anonymous?':
+                        return true;
+                    default:
+                        return '';
+                }
+            }
+        }
+    } else {
+        user.set('navbar_background',
+            (user.get('profile_background')
+                ? user.get('profile_background')
+                : navbar_background_default));
+    }
+    return user;
+}
+function mdIcon (icon, isLight = false) {
+    //api.h('i.material-icons.md-24.md-'+(isLight?'light':'dark'), icon)
+    return api.h(`i.material-icons.mdi.mdi-${icon.replace('_','-')}.md-24.md-${(isLight?'light':'dark')}`)
+}
+
+function mdEntry (link, icon, text, count = 0, isExternalLink = false) {
+    let countSpan = undefined;
+    if (count) {
+        countSpan = api.h('span.count', `${count}`)
+    }
+    return api.h('a.md-entry.initial', {
+        href: link,
+        'data-auto-route': `${!isExternalLink}`
+    }, [
+        mdIcon(icon),
+        api.h('span', text),
+        countSpan
+    ]);
+};
+
+const MainToolbarTemplate = {
+    toolbarName: 'template',
+    buildClasses() {
+        return ['left']
+    }
+};
+api.createWidget('md-toolbar-search', _.extend({}, {
+    tagName: 'form.md-search.mdmaintoolbar.center',
+    buildAttributes() {
+        return {
+            action: '/search',
+            method: 'GET'
+        }
+    },
+    html(attr, state) {
+        if (!globalState.get('showSearchbar')) {
+            return false
+        }
+        return [
+            api.h('input#input-box.toolbar-title.center', {
+                name: 'q',
+                type: 'text',
+                placeholder: '搜索 hitorino'
+            }, [])
+        ];
+    },
+}, MainToolbarTemplate));api.createWidget('md-toolbar-topic-list', _.extend({}, {
+    tagName: 'div.for-topic-list.mdmaintoolbar.md-title.left',
     
     html(attr, state) {
         return [
                 api.h('span', getTitle())
         ];
     }
-}, MainToolbarTemplate))
-
-
-api.createWidget('mdmaintoolbar-topic', _.extend({}, {
-    tagName: 'div#md-topic.mdmaintoolbar.left.md-title',
+}, MainToolbarTemplate));api.createWidget('md-toolbar-topic', _.extend({}, {
+    tagName: 'div.for-topic.mdmaintoolbar.left.md-title',
     
     html(attr, state) {
         const controller = this.register.lookup('controller:topic')
@@ -235,180 +251,110 @@ api.createWidget('mdmaintoolbar-topic', _.extend({}, {
                 tagsHtml
         ];
     }
-}, MainToolbarTemplate))
-
-
-function getUser() {
-    var user = Discourse.User.current();
-    const navbar_background_default = "https://forum.hitorino.moe/uploads/default/original/1X/6e3efd0a3b368ef708e1b70c550359f01f701f50.png";
-    if (!user) {
-        user = {
-            get(key) {
-                switch (key) {
-                    case 'navbar_background':
-                        return navbar_background_default;
-                    case 'username':
-                        return 'hitorino';
-                    case 'name':
-                        return '未登录';
-                    case 'unread_notifications':
-                    case 'unread_private_messages':
-                        return 0;
-                    default:
-                        return '';
-                }
-            }
-        }
-    } else {
-        user.set('navbar_background',
-            (user.get('profile_background')
-                ? user.get('profile_background')
-                : navbar_background_default));
-    }
-    return user;
-}
-
-const mdIcon = (icon, isLight = false) => {
-    //api.h('i.material-icons.md-24.md-'+(isLight?'light':'dark'), icon)
-    return api.h(`i.material-icons.mdi.mdi-${icon.replace('_','-')}.md-24.md-${(isLight?'light':'dark')}`)
-}
-
-const mdEntry = (link, icon, text, count = 0, isExternalLink = false) => {
-    var countSpan = undefined;
-    if (count) {
-        countSpan = api.h('span.count', `${count}`)
-    }
-    return api.h('a.md-entry.initial', {
-        href: link,
-        'data-auto-route': `${!isExternalLink}`
-    }, [
-        mdIcon(icon),
-        api.h('span', text),
-        countSpan
-    ]);
-};
-
-window.onMDNavDrawerToggled = function(isOpen) {}
-
-// Widgets
-
-api.createWidget('mdtoolbar', {
-    tagName: 'div#toolbar',
-    buildKey: () => 'mdtoolbar',
-    defaultState() {
-        return {
-            hide: false,
-            path: globalState.currentPath
-        }
-    },
-    html(attr, state) {
-        this.appEvents.off('msktheme:page-change')
-        this.appEvents.on('msktheme:page-change', ()=>{
-            state.path = getCurrentPath()
-            this.scheduleRerender()
-        })
-        let currentMainToolBar = globalState.get('currentToolbar') || getCurrentToolbar()
-        if (currentMainToolBar) {
-            currentMainToolBar = this.attach(`mdmaintoolbar-${currentMainToolBar}`)
-        } else {
-            currentMainToolBar = []
-        }
-        return [
-            this.attach('md-menubutton', {
-                openChild: false
-            }),
-            h('a#logo.toolbar-title.left', {
-                'data-auto-route': 'true',
-                href: '/'
-            }, [
-                h('img', {
-                    id: 'md-site-logo',
-                    src: window.HITORINO_SITE_LOGO || Discourse.SiteSettings.logo_url,
-                    alt: 'hitorino*'
-                })
-            ]),
-            currentMainToolBar,
-            this.attach('mdmaintoolbar-search-button')
-        ];
-    },
-    click(e) {
-        if (e.type === 'click' && e.button === 0 && e.target.id ===
-            'md-site-logo') {
-            e.preventDefault();
-            DiscourseURL.routeTo('/');
-            return false;
-        } else {
-            return true;
-        }
-    },
-    openSearchBar() {
-        this.state.hide = true;
-    },
-    closeSearchBar() {
-        $('form#search-bar').fadeOut(250, ()=> {
-            this.state.hide = false;
-            this.scheduleRerender();
-        });
-    }
-});
-
-
+}, MainToolbarTemplate));
 {
-    // toolbar -> md-menubutton | md-searchbutton
-    const toolbarButtonPrototype = {
-        tagName: '',
-        buildKey(attrs) {
-            return '';
+    api.createWidget('md-toolbar', {
+        tagName: 'div#toolbar.md-toolbar',
+        buildKey: () => 'mdtoolbar',
+        defaultState() {
+            return {
+                hide: false,
+                path: globalState.currentPath
+            };
         },
-        defaultState(attrs) {
-            if (attrs.hasOwnProperty('openChild')) {
-                return {
-                    openChild: attrs.openChild,
-                    user: getUser()
-                };
+        html(attr, state) {
+            this.appEvents.off('msktheme:page-change');
+            this.appEvents.on('msktheme:page-change', ()=>{
+                state.path = getCurrentPath();
+                this.scheduleRerender();
+            });
+            let currentMainToolBar = globalState.get('currentToolbar') || getCurrentToolbar()
+            if (currentMainToolBar) {
+                currentMainToolBar = this.attach(`md-toolbar-${currentMainToolBar}`)
             } else {
-                return {
-                    openChild: false,
-                    user: getUser()
-                };
+                currentMainToolBar = []
+            }
+            return [
+                this.attach('md-toolbar-nav-drawer-button', {
+                    openChild: false
+                }),
+                h('a#logo.toolbar-title.left', {
+                    'data-auto-route': 'true',
+                    href: '/'
+                }, [
+                    h('img', {
+                        id: 'md-site-logo',
+                        src: window.HITORINO_SITE_LOGO || Discourse.SiteSettings.logo_url,
+                        alt: 'hitorino*'
+                    })
+                ]),
+                currentMainToolBar,
+                this.attach('md-toolbar-search-button')
+            ];
+        },
+        click(e) {
+            if (e.type === 'click' && e.button === 0 && e.target.id ===
+                'md-site-logo') {
+                e.preventDefault();
+                DiscourseURL.routeTo('/');
+                return false;
+            } else {
+                return true;
+            }
+        }
+    });
+}{
+    api.createWidget('md-toolbar-search-button', {
+        tagName: 'div#search-button.md-button.right',
+        buildClasses() {
+            if (globalState.get('showSearchbar')) {
+                return ['active'];
+            } else {
+                return [];
             }
         },
+        html() {
+            globalState.addObserver('showSearchbar', ()=>{
+                this.scheduleRerender();
+            });
+            if (!globalState.get('showSearchbar')) {
+                return mdIcon('magnify');
+            } else {
+                return mdIcon('close');
+            }
+        },
+
+        click: clickActionHandler,
+        clickAction(e) {
+            if (globalState.get('showSearchbar')) {
+                $('.md-toolbar form.md-search').fadeOut(250, ()=> {
+                    globalState.set('showSearchbar', false);
+                });
+            } else {
+                globalState.set('showSearchbar', true);
+            }
+            return false;
+        }
+    });
+}{
+    // toolbar -> md-toolbar-nav-drawer-button
+    api.createWidget('md-toolbar-nav-drawer-button', $.extend({}, {
+        tagName: 'a.nav-drawer-button.md-button.left.initial',
+        buildKey(attrs) {
+            return 'md-toolbar-nav-drawer-button';
+        },
+        
+        defaultState() {
+            return {
+                user: getUser()
+            };
+        },
+
         makeIcon(name) {
-            //return api.h(`i.material-icons.md-24.md-light`, name);
             return mdIcon(name, true);
         },
 
-        makeContent() {},
-
-        html(attr, state) {
-                return this.makeContent.call(this, attr, state);
-        },
-
-        onChildOpen() {},
-        onChildClose() {},
-
-        click(e) {
-            if (!e) {
-                return true;
-            }
-            e.preventDefault();
-            this.state.openChild = !this.state.openChild;
-            if (this.state.openChild) {
-                this.onChildOpen.call(this, this.attr, this.state);
-            } else {
-                this.onChildClose.call(this, this.attr, this.state);
-            }
-            return false;
-        }
-    };
-
-    api.createWidget('md-menubutton', $.extend({}, toolbarButtonPrototype, {
-        tagName: 'a#mdmenu-button.md-button.left.initial',
-        buildKey(attrs) {
-            return 'md-menubutton';
-        },
-        
-        makeContent(attrs, state) {
+        html(attrs, state) {
             var contents = [this.makeIcon('menu')];
             const unreadNotifications = state.user.get('unread_notifications');
             this.appEvents.on('notifications:changed', ()=>{
@@ -427,12 +373,14 @@ api.createWidget('mdtoolbar', {
                     }
                 }));
             }
-
-            contents.push(this.attach('mdnavbar', {
-                open: state.openChild
-            }));
             return contents;
         },
+
+        click: clickActionHandler,
+        clickAction(e) {
+            globalState.set('showNavDrawer', !globalState.get('showNavDrawer'));
+        },
+
         onChildOpen() {
             const centerLeft = $('#toolbar .center').css('left');
             const w1 = $('html').width();
@@ -451,74 +399,33 @@ api.createWidget('mdtoolbar', {
             $('body').removeClass('md-no-selection');
         }
     }));
-
-    api.createWidget('md-searchbutton', $.extend({}, toolbarButtonPrototype, {
-        tagName: 'div#search.md-button.right.initial',
-        buildKey: () => 'md-searchbutton',
-        makeContent(attrs, state) {
-            var contents = [this.makeIcon('magnify')];
-            return contents;
-        },
-        onChildOpen(attr, state) {
-            this.sendWidgetAction('openSearchBar');
-        }
-    }));
-}
-
-api.createWidget('mdsearchbar', {
-    tagName: 'form#search-bar',
-    buildAttributes() {
-        return {
-            action: '/search',
-            method: 'GET'
-        }
+}api.createWidget('md-nav-drawer-overlay', {
+    tagName: '#overlay.md-nav-drawer-overlay',
+    buildClasses() {
+        globalState.addObserver('showNavDrawer', ()=>{
+            this.scheduleRerender();
+        });
+        return globalState.get('showNavDrawer')?['active']:['inactive'];
     },
-    html(attr, state) {
-        if (attr.hide) {
-            return []
-        }
-        return [
-            api.h('input#input-box.toolbar-title.center', {
-                name: 'q',
-                type: 'text',
-                placeholder: '搜索 hitorino'
-            }, []),
-            api.h('div#clear.md-button.left.initial', api.h(
-                'i#clear-icon.material-icons.md-24.md-light', {
-                    style: 'transform: rotateY(180deg)'
-                }, 'backspace')),
-            api.h('div#close.md-button.right.initial', api.h(
-                'i#close-icon.material-icons.md-24.md-light', {
-                    style: 'transform: rotateY(180deg)'
-                }, 'clear'))
-        ];
+    html() {
+        return [];
     },
-    click(e) {
-        if (!e) {
-            return true;
-        } else if (e.type === 'click') {
-            e.preventDefault();
-            switch (e.target.id) {
-                case 'clear-icon':
-                    $('#toolbar #input-box').val('');
-                    break;
-                case 'close-icon':
-                    this.sendWidgetAction('closeSearchBar');
-                    break;
-            }
-            return false;
-        } else {
-            return true;
-        }
+    click: clickActionHandler,
+    clickAction(e) {
+        globalState.set('showNavDrawer', false);
     }
 });
-
 // mdmenu/mdnavbar here
-api.createWidget('mdnavbar', {
-    tagName: 'div#mdnavbar',
+api.createWidget('md-nav-drawer', {
+    tagName: 'div.md-nav-drawer',
+    buildClasses() {
+        if (!globalState.get('showNavDrawer')) {
+            return ['inactive']
+        }
+    },
     userInfo() {
         const user = this.user;
-        const userAvatar = api.h('a#user-avatar', {
+        const userAvatar = api.h('a.user-avatar', {
             href: `/u/${user.get('username')}`,
             'data-auto-route': 'true'
         }, [
@@ -527,7 +434,7 @@ api.createWidget('mdnavbar', {
                     "{size}", "96")
             })
         ]);
-        const userNames = api.h('a#user-names', {
+        const userNames = api.h('a.user-names', {
             href: `/u/${user.get('username')}`,
             'data-auto-route': 'true'
         }, [
@@ -535,18 +442,18 @@ api.createWidget('mdnavbar', {
             api.h('br'),
             user.get('name')
         ]);
-        return api.h('div#user-info', {
+        return api.h('div.md-user-info', {
             style: `background-image: url(${user.get('navbar_background')})`
         }, [
             userAvatar,
             userNames,
-            api.h('span#user-title', user.get('title'))
+            api.h('span.user-title', user.get('title'))
         ])
     },
 
     account() {
         if (!Discourse.User.current()) {
-            return api.h('div#account', [
+            return api.h('div.account', [
                 api.h('span.subheader', '账户'),
                 mdEntry('/login', 'account', '登录账户')
             ])
@@ -563,7 +470,7 @@ api.createWidget('mdnavbar', {
         if (!!user.admin) {
             admin = mdEntry('/admin', 'key', '后台管理');
         }
-        return api.h('div#account', [
+        return api.h('div.account', [
             api.h('span.subheader', '账户'),
             admin,
             mdEntry(`/u/${user.get('username')}/preferences`,
@@ -578,7 +485,7 @@ api.createWidget('mdnavbar', {
 
     misc() {
         const user = this.user;
-        return api.h('div#misc', [
+        return api.h('div.misc', [
             api.h('span.subheader', '更多'),
             mdEntry('https://hitorino.moe/', 'home',
                 'hitorino × 猫娘领域 首页', 0, false),
@@ -590,48 +497,34 @@ api.createWidget('mdnavbar', {
         ]);
     },
 
-    navDrawer(hide) {
-        if (!Discourse.User.current()) {
-            return api.h(`div#nav-drawer${hide?'.hide-nav-drawer':''}`, [
+    html() {
+        globalState.addObserver('showNavDrawer', ()=>{
+            this.scheduleRerender();
+        });
+        this.user = getUser();
+        window.onMDNavDrawerToggled || window.onMDNavDrawerToggled(globalState.get('showNavDrawer'));
+
+        if (!globalState.get('showNavDrawer')) {
+            return [];
+        } else if (!Discourse.User.current()) {
+            return [
                 this.userInfo(),
                 this.account(),
                 this.misc()
-            ])
-        }
-        return api.h(`div#nav-drawer${hide?'.hide-nav-drawer':''}`, [
-            this.userInfo(),
-            this.attach('mdmenu-tabs'),
-            this.attach('mdnavbar-categories'),
-            this.account(),
-            this.misc()
-        ])
-    },
-    html(attrs) {
-        this.user = getUser();
-        window.onMDNavDrawerToggled || window.onMDNavDrawerToggled(attrs.open);
-        if (!attrs.open) {
+            ];
+        } else {
             return [
-                this.navDrawer(true),
-                api.h('div#overlay.hide-nav-drawer')
+                this.userInfo(),
+                this.attach('mdmenu-tabs'),
+                this.attach('mdnavbar-categories'),
+                this.account(),
+                this.misc()
             ];
         }
-        $('#overlay').show();
-        $('#nav-drawer').show();
-        return [
-            api.h('div#overlay'),
-            this.navDrawer()
-        ]
     },
     click(e) {
         if (!aClickHandler(e)) {
             return false;
-        } else if (e.target.id === 'overlay') {
-            e.preventDefault();
-            $('#overlay').fadeOut(500);
-            $('#nav-drawer').addClass('closed').fadeOut(500, function() {
-                $('#mdmenu-button').trigger('click');
-            });
-            return false
         } else if (e.target.id === 'logout') {
             e.preventDefault();
             //api.container.lookup("controller:application").send("logout");
@@ -642,6 +535,9 @@ api.createWidget('mdnavbar', {
         }
     }
 });
+
+
+// Widgets
 
 {
     // Tabs
@@ -1157,15 +1053,18 @@ api.createWidget('mdnavbar-categories', {
     },
     click: aClickHandler
 });
-
 api.reopenWidget('header', {
     html() {
-        return this.attach('mdtoolbar');
+        return [
+            this.attach('md-toolbar'),
+            this.attach('md-nav-drawer'),
+            this.attach('md-nav-drawer-overlay')
+        ];
     }
 });
 </script>
 
-<script type="text/javascript">
+<script>
     if (typeof String.prototype.startsWith != 'function') {
       String.prototype.startsWith = function (prefix){
         return this.slice(0, prefix.length) === prefix;
