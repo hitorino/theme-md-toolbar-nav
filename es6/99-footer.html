@@ -1,0 +1,35 @@
+</script>
+
+<script type="text/javascript">
+    if (typeof String.prototype.startsWith != 'function') {
+      String.prototype.startsWith = function (prefix){
+        return this.slice(0, prefix.length) === prefix;
+      };
+    }
+    
+    if (typeof String.prototype.endsWith != 'function') {
+        String.prototype.endsWith = function(suffix) {
+            return this.indexOf(suffix, this.length - suffix.length) !== -1;
+        };
+    }
+</script>
+
+<script>
+
+$(document).ready(function(){
+    $('#main').on('click.close-nav-bar', '.md-entry' ,function (e) {
+        $('#overlay').click();
+        return true;
+    });
+    
+    $('#main').on('click.do-logout', 'a#logout.md-entry' ,function (e) {
+        Discourse.__container__.lookup("controller:application").send("logout");
+        return true;
+    });
+    
+    $('#main').on('click.close-nav-bar-user-info', '#user-info a' ,function (e) {
+        $('#overlay').click();
+        return true;
+    });
+});
+</script>

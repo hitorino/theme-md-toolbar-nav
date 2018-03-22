@@ -1,0 +1,24 @@
+/* ============================== 发新帖子 ============================== */
+.list-controls #create-topic,
+.timeline-footer-controls button.widget-button.btn.create.no-text.btn-icon {
+    position: fixed;
+    right: 192px;
+    bottom: 32px;
+}
+.topic-footer-main-buttons .btn-primary {
+    display: none;
+}
+.timeline-container {
+    transform: none;
+}
+.timeline-container.timeline-docked-bottom .timeline-footer-controls {
+    opacity: 1;
+    pointer-events: inherit;
+    pointer-events: unset;
+}
+.list-controls #create-topic:hover,
+.topic-footer-main-buttons .btn-primary:hover,
+.timeline-footer-controls button.widget-button.btn.create.no-text.btn-icon:hover {
+    background-color: orange !important;
+    box-shadow: $MDELEV12;
+}

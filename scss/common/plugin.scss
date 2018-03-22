@@ -1,0 +1,408 @@
+.md-no-selection {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.hide-nav-drawer {
+    display: none;
+}
+
+
+#search {
+    z-index: 1002;
+}
+header.d-header {
+    padding: 0;
+    margin: 0;
+    height: 56px;
+    box-shadow: 0 0;
+    background-color: transparent;
+}
+.d-header * {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* site-logo */
+#toolbar > #logo {
+	height: 48px;
+	width: 160px;
+	top: 4px;
+	left: 56px;
+}
+#toolbar > #logo img {
+	display: block;
+	margin: auto;
+	padding: 4px 5px;
+	height: 40px;
+}
+
+i.mdi, 
+i.mdi:before {
+    text-align: center;
+    vertical-align: middle;
+    display: block;
+}
+
+
+.md-button > i.mdi:before {
+    font-size: 24px;
+    margin: 0;
+    width: 24px;
+    height: 24px;
+    color: #fff;
+}
+#mdmenu-button {
+    z-index: 1003;
+}
+#mdmenu-button > a {
+    position: absolute;
+    display: block;
+}
+#mdmenu-button > a.unread-private-messages {
+    top: 0;
+    left: 40px;
+}
+#mdmenu-button > a.unread-notifications {
+    top: 0;
+    left: 0;
+}
+
+#toolbar {
+	position: fixed;
+	top: 0;
+	left: -4px;
+	box-sizing: border-box;
+	height: 56px;
+	width: calc(100% + 8px);
+	padding: 4px;
+	background-color: $MDPRIMARYCOLOR;
+	box-shadow: $MDELEV2;
+	z-index: 1002;
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    /* IE10+ specific styles go here */
+    #toolbar,
+    #mdnavbar > #overlay,
+    #nav-drawer {
+        position: expression(fixed);
+    }
+}
+
+#toolbar:after {
+    clear: both;
+}
+
+#toolbar * {
+	-webkit-tap-highlight-color: transparent;
+}
+
+#toolbar .left{
+    float: left;
+	top: 4px;
+	left: 8px;
+}
+
+#toolbar .right{
+    float: right;
+	top: 4px;
+	right: 8px;
+}
+
+#toolbar .center{
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+}
+
+/* generic main toolbar */
+
+#toolbar .mdmaintoolbar {
+    height: 100%;
+    z-index: -1;
+}
+
+
+#toolbar .md-title {
+    vertical-align: middle;
+    font-size: 0;
+    position: relative;
+    top: 12px;
+    line-height: 24px;
+}
+
+#toolbar .md-title > * {
+    display: inline-block;
+    font-size: 14px;
+    height: 24px;
+    line-height: 24px;
+    vertical-align: middle;
+}
+#toolbar .md-title > span {
+    font-size: 24px;
+}
+
+#toolbar .md-title > .discourse-tag {
+    padding: 0 8px;
+    margin: 0 8px;
+}
+
+#toolbar .initial {
+	animation: none !important;
+}
+
+.md-button {
+	padding: 12px;
+	border-radius: 50%;
+	animation: md-button-leave .5s ease-out;
+}
+
+.md-button {
+    text-align: center;
+    width: 24px;
+    height: 24px;
+    color: #fff;
+}
+
+.md-button:not(.initial):hover {
+    background-color: $MDSECONDARYCOLOR;
+	animation: md-button-hover .5s ease-out;
+}
+@keyframes md-button-hover {
+	0% {background-color: transparent;}
+	100% {background-color: $MDSECONDARYCOLOR;}
+}
+@keyframes md-button-leave {
+	0% {background-color: $MDSECONDARYCOLOR;}
+	100% {background-color: transparent;}
+}
+#mdnavbar > #overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+#toolbar #nav-drawer {
+	position: fixed;
+	background-color: white;
+	left: 0;
+	top: 0;
+	width: calc(100% - 120px);
+	max-width: 320px;
+	min-width: 272px;
+	height: 100%;
+	border: 0;
+	box-shadow: $MDELEV16;
+	z-index: 1003;
+	overflow: auto;
+	text-align: left;
+	animation: slidein-menu 0.25s ease-out;
+}
+#toolbar #nav-drawer.closed {
+	transform: translate3d(calc(-100% - 40px),0,0);
+	animation: slideout-menu 0.25s ease-in;
+}
+@keyframes slidein-menu {
+	0% {transform: translate3d(calc(-100% - 40px),0,0);}
+	100% {transform: translate3d(0,0,0);}
+}
+@keyframes slideout-menu {
+	0% {transform: translate3d(0,0,0);}
+	100% {transform: translate3d(calc(-100% - 40px),0,0);}
+}
+#toolbar #nav-drawer > #account,
+#toolbar #nav-drawer > #misc {
+	padding: 8px 0;
+	border-bottom: 1px solid #eee;
+}
+#toolbar #nav-drawer > div > a {
+	display: block;
+}
+#toolbar #nav-drawer > #user-info {
+	background-size: cover;
+	background-position: bottom;
+	box-sizing: border-box;
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+}
+#toolbar #nav-drawer > #user-info:after {
+	content: "";
+	position: absolute;
+	top: 120px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: -1;
+	background-image:inherit;
+	background-size: cover;
+	background-position: bottom;
+	margin: -32px;
+	filter: blur(32px) brightness(0.5);
+}
+#toolbar #nav-drawer > #user-info > #user-avatar {
+	margin: 8px 16px;
+	width: fit-content;
+}
+#toolbar #nav-drawer > #user-info > #user-avatar > img {
+	height: 64px;
+	border-radius: 50%;
+}
+#toolbar #nav-drawer > #user-info > #user-names,
+#toolbar #nav-drawer > #user-info > #user-title {
+	display: block;
+	color: #fff;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	box-sizing: border-box;
+}
+#toolbar #nav-drawer > #user-info > #user-names {
+	float: left;
+	width: calc(100% - 80px);
+	padding: 6px 8px 6px 16px;
+	line-height: 24px;
+	font-size: 14px;
+	white-space: nowrap;
+}
+#toolbar #nav-drawer > #user-info > #user-title {
+	float: right;
+	width: 80px;
+	padding: 20px 16px 8px 8px;
+	line-height: 16px;
+	font-size: 12px;
+	text-align: right;
+}
+#toolbar #nav-drawer .subheader:not(.tab-header) {
+	display: block;
+	padding: 0 16px;
+	line-height: 40px;
+	color: #666;
+}
+#toolbar #nav-drawer > .tabs {
+    padding: 0 0 8px 0;
+	border-bottom: 1px solid #eee;
+}
+#toolbar #nav-drawer > .tabs > .md-tab-headers {
+    background-color: #eee;
+}
+#toolbar #nav-drawer > .tabs > .md-tab-headers > .tab-header {
+    display: inline-block;
+	padding: 0 16px;
+    line-height: 40px;
+	height: 40px;
+	color: #888;
+	animation: tab-header-inactive .25s;
+}
+#toolbar #nav-drawer > .tabs > .md-tab-headers > .tab-header.active {
+    color: #666;
+    background-color: white;
+    animation: tab-header-active .25s;
+}
+#toolbar #nav-drawer > .tabs > .md-tab-headers > .tab-header.initial {
+    animation: none !important;
+}
+@keyframes tab-header-active {
+	0% {background-color: #eee;}
+	100% {background-color: white;}
+}
+@keyframes tab-header-inactive {
+	0% {background-color: white;}
+	100% {background-color: #eee;}
+}
+#toolbar #nav-drawer > .tabs > .tab-content {
+    padding-top: 8px;
+}
+#toolbar #nav-drawer > .tabs > .tab-content > .read * {
+    color: #aaa;
+}
+
+
+
+#toolbar #nav-drawer .md-entry,
+#toolbar #nav-drawer span.no-more {
+    display: block;
+	padding: 0 16px;
+	line-height: 40px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	animation: md-entry-leave .25s ease-out;
+}
+#toolbar #nav-drawer .md-entry:hover {
+	background-color: #eee;
+	animation: md-entry-hover .25s ease-out !important;
+}
+#toolbar #nav-drawer .md-entry > i {
+	float: left;
+	margin: 8px 0;
+}
+#toolbar #nav-drawer .md-entry > div {
+	float: left;
+	height: 20px;
+	width: 20px;
+	border-radius: 50%;
+	margin: 10px 2px;
+}
+#toolbar #nav-drawer .md-entry > span {
+	font-size: 14px;
+	color: #666;
+	margin-left: 16px;
+}
+#mdnavbar #nav-drawer .md-entry > span p {
+    display: inline;
+}
+#mdnavbar #nav-drawer .md-entry > span > i{
+    display: none;
+}
+#toolbar #nav-drawer .md-entry > .count {
+	float: right;
+}
+
+
+#toolbar > #md-searchbar {
+    width: 100%;
+	animation: appear 0.25s ease-out;
+}
+#toolbar > #md-searchbar.closed {
+	opacity: 0;
+	animation: disappear 0.25s ease-out;
+}
+@keyframes appear {
+	0% {opacity: 0;}
+	100% {opacity: 1;}
+}
+@keyframes disappear {
+	0% {opacity: 1;}
+	100% {opacity: 0;}
+}
+#toolbar > #md-searchbar > #input-box {
+	padding: 8px;
+	border: none;
+	box-sizing: border-box;
+	width: calc(100% - 120px);
+	max-width: 640px;
+	height: 40px;
+	background-color: $MDPRIMARYCOLOR-LIGHT;
+	color: white;
+	font-size: 14px;
+	font-weight: 500;
+	box-shadow: none;
+}
+#toolbar > #md-searchbar > #input-box::placeholder {
+	color: white;
+	opacity: 0.85;
+	font-weight: 400;
+}
+#toolbar > #md-search-bar > #input-box::-webkit-input-placeholder {
+	color: white;
+	opacity: 0.85;
+}
+#toolbar > #md-searchbar > #input-box::-ms-input-placeholder { 
+	color: white;
+	opacity: 0.85;
+}
