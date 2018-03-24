@@ -494,7 +494,7 @@
 api.createWidget('mdnavbar-categories', {
     tagName: 'div#categories',
     categories() {
-        const site = Discourse.Site.current();
+        const site = this.site;
         let result = [];
         // add category entries
 		for (var i = 0; i < site.categories.length - 1; i++) {
@@ -502,7 +502,11 @@ api.createWidget('mdnavbar-categories', {
 		        href: site.categories[i].get('url'),
 		        'data-auto-route': 'true'
 		    }, [
-		        api.h('div.list-icon', {style: `background-color: #${site.categories[i].get('color')}`}),
+		        api.h('div.list-icon', {
+                    style: {
+                        'background-color': `#${site.categories[i].get('color')}`
+                    }
+                }),
 		        api.h('span', site.categories[i].get('name'))
             ]));
 		}

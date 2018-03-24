@@ -9,16 +9,7 @@
 	100% {background-color: transparent;}
 }
 
-/* =====================    Font    ===================== */
-@font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: url('https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/MaterialIcons-Regular.eot'); /* IE9 Compat Modes */
-  src: url('webfont.woff2') format('woff2'), /* Super Modern Browsers */
-       url('https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/MaterialIcons-Regular.woff') format('woff'), /* Pretty Modern Browsers */
-       url('https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/MaterialIcons-Regular.woff2')  format('truetype'); /* Safari, Android, iOS */
-}
+/* =====================    Icon    ===================== */
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;

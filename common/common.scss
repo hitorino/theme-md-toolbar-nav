@@ -1,6 +1,80 @@
 @charset "UTF-8";
 /* =====================   Colors   ===================== */
 /* ===================== Elevations ===================== */
+html {
+  /*Futura*/
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", sans-serif, "Microsoft YaHei", "微软雅黑", Arial;
+  font-size: 15px;
+  line-height: 18px; }
+
+html {
+  /*Futura*/
+  font-family: "Noto Sans CJK SC", "Helvetica Neue","Helvetica", "PingFang SC",'Hiragino Sans GB',sans-serif, "Microsoft YaHei", "微软雅黑",Arial;
+  font-size: 15px;
+  line-height: 18px; }
+
+.topic-list > tbody > tr {
+  /* 帖子列表 */
+  font-size: 14px; }
+
+.timeline-scrollarea-wrapper {
+  /* 时间轴 */
+  font-size: 12px; }
+
+#topic-title h1 {
+  /* 帖子标题 */
+  font-size: 24px;
+  line-height: 18px; }
+
+h2 {
+  font-size: 18px;
+  /* 内容标题 */
+  font-weight: bold; }
+
+h3 {
+  font-size: 14px; }
+
+.menu-links.columned li {
+  /* 菜单字体 */
+  font-size: 14px; }
+
+.contents {
+  /* 内容 */
+  font-size: 15px;
+  line-height: 1.67; }
+
+.body-page p {
+  /* page */
+  font-size: 14px;
+  line-height: 1.67; }
+
+.body-page h2 {
+  /* body-page */
+  font-size: 14px;
+  font-weight: bold; }
+
+.body-page h3 {
+  /* body-page */
+  font-size: 14px; }
+
+.body-page table {
+  font-size: 14px;
+  /* 统计表 */ }
+
+.body-page ul {
+  /* page */
+  font-size: 14px;
+  line-height: 1.67; }
+
+.nav-pills > li > a {
+  font-size: 15px;
+  /* 最新,近期,分类 */
+  line-height: 18px; }
+
+img.avatar {
+  border-radius: 50%;
+  /* 头像圆角 */ }
+
 .body-page blockquote,
 .body-page hr,
 .body-page p,
@@ -101,16 +175,7 @@
   100% {
     background-color: transparent; } }
 
-/* =====================    Font    ===================== */
-@font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: url("https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/MaterialIcons-Regular.eot");
-  /* IE9 Compat Modes */
-  src: url("webfont.woff2") format("woff2"), url("https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/MaterialIcons-Regular.woff") format("woff"), url("https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/MaterialIcons-Regular.woff2") format("truetype");
-  /* Safari, Android, iOS */ }
-
+/* =====================    Icon    ===================== */
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -204,9 +269,6 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none; }
-
-.hide-nav-drawer {
-  display: none; }
 
 #search {
   z-index: 1002; }
@@ -312,7 +374,9 @@ i.mdi:before {
 #toolbar .md-title {
   vertical-align: middle;
   font-size: 0;
-  line-height: 56px; }
+  line-height: 24px;
+  position: relative;
+  top: 12px; }
 
 #toolbar .md-title > * {
   display: inline-block;
@@ -387,6 +451,36 @@ i.mdi:before {
 .d-header .md-nav-drawer.inactive {
   display: none; }
 
+.permanent-nav-drawer {
+  width: 272px;
+  margin-top: 60px;
+  height: auto;
+  left: 0;
+  float: left; }
+
+.permanent-nav-drawer .d-header {
+  position: static;
+  width: 272px;
+  height: 100%; }
+
+.permanent-nav-drawer .d-header .md-nav-drawer {
+  position: static;
+  width: 272px;
+  height: 100%;
+  z-index: -1; }
+
+.permanent-nav-drawer .d-header #overlay {
+  display: none; }
+
+.permanent-nav-drawer ~ #main-outlet {
+  float: left; }
+
+.permanent-nav-drawer ~ #main-outlet:after {
+  clear: both; }
+
+.permanent-nav-drawer ~ #main-outlet * {
+  max-width: 1110px; }
+
 .d-header .md-nav-drawer.closed {
   transform: translate3d(calc(-100% - 40px), 0, 0);
   animation: slideout-menu 0.25s ease-in; }
@@ -433,6 +527,11 @@ i.mdi:before {
   background-position: bottom;
   margin: -32px;
   filter: blur(32px) brightness(0.5); }
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  /* IE10+ specific styles go here */
+  .d-header .md-nav-drawer > .md-user-info:after {
+    top: 0; } }
 
 .d-header .md-nav-drawer > .md-user-info > .user-avatar {
   margin: 8px 16px;

@@ -17,19 +17,15 @@
 <script>
 
 $(document).ready(function(){
-    $('#main').on('click.close-nav-bar', '.md-entry' ,function (e) {
-        $('#overlay').click();
-        return true;
-    });
-    
-    $('#main').on('click.do-logout', 'a#logout.md-entry' ,function (e) {
-        Discourse.__container__.lookup("controller:application").send("logout");
-        return true;
-    });
-    
-    $('#main').on('click.close-nav-bar-user-info', '#user-info a' ,function (e) {
-        $('#overlay').click();
-        return true;
-    });
+    function updatePermanent() {
+        MDNavDrawerUpdatePermanent();
+        if (MDNavDrawerIsPermanent()) {
+            $('header.d-header').parent().addClass('permanent-nav-drawer');
+        } else {
+            $('header.d-header').parent().removeClass('permanent-nav-drawer');
+        }
+    }
+    $(window).resize(updatePermanent);
+    updatePermanent();
 });
 </script>

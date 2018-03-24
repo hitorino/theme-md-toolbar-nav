@@ -57,20 +57,22 @@ function getTitle() {
         }
         return I18n.t(`filters${path.replace('/','.')}.title`)
     }
-    const regexpCategory = /\/c\/([^\/]+)/
-    const regexpCategoryTag = /tags\/c\/([^\/]+)\/([^\/]+)/
-    const regexpTag = /tags\/([^\/]+)/
+    const regexpCategory = /^\/c\/([^\/]+)/
+    const regexpCategoryTag = /^\/tags\/c\/([^\/]+)\/([^\/]+)/
+    const regexpTag = /^\/tags\/([^\/]+)/
     let mo = path.match(regexpCategoryTag)
-    if (mo) {
-        return `${getCategoryNameBySlug(mo.group(1))} - ${mo.group(2)}`
+    if (!!mo) {
+        return `${getCategoryNameBySlug(mo[1])} - ${mo[2]}`
     }
     mo = path.match(regexpCategory)
-    if (mo) {
-        return getCategoryNameBySlug(mo.group(1))
+    if (!!mo) {
+        return getCategoryNameBySlug(mo[1]);
+    } else {
+        console.log(mo);
     }
     mo = path.match(regexpTag)
-    if (mo) {
-        return (mo.group(1))
+    if (!!mo) {
+        return mo[1];
     }
     return undefined
 }

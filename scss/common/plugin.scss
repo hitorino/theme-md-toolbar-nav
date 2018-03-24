@@ -5,10 +5,6 @@
     user-select: none;
 }
 
-.hide-nav-drawer {
-    display: none;
-}
-
 
 #search {
     z-index: 1002;
@@ -130,7 +126,9 @@ i.mdi:before {
 #toolbar .md-title {
     vertical-align: middle;
 	font-size: 0;
-	line-height: 56px;
+	line-height: 24px;
+	position: relative;
+	top: 12px;
 }
 
 #toolbar .md-title > * {
@@ -207,9 +205,44 @@ i.mdi:before {
 	animation: slidein-menu 0.25s ease-out;
 }
 
-
 .d-header .md-nav-drawer.inactive {
 	display: none;
+}
+
+.permanent-nav-drawer {
+	width: 272px;
+	margin-top: 60px;
+	height: auto;
+	left: 0;
+	float: left;
+}
+
+.permanent-nav-drawer .d-header {
+	position: static;
+	width: 272px;
+	height: 100%;
+}
+.permanent-nav-drawer .d-header .md-nav-drawer {
+	position: static;
+	width: 272px;
+	height: 100%;
+	z-index: -1;
+}
+
+.permanent-nav-drawer .d-header #overlay {
+	display: none;
+}
+
+.permanent-nav-drawer ~ #main-outlet {
+	float: left;
+}
+
+.permanent-nav-drawer ~ #main-outlet:after {
+	clear: both;
+}
+
+.permanent-nav-drawer ~ #main-outlet * {
+	max-width: 1110px;
 }
 
 .d-header .md-nav-drawer.closed {
@@ -254,6 +287,14 @@ i.mdi:before {
 	background-position: bottom;
 	margin: -32px;
 	filter: blur(32px) brightness(0.5);
+}
+
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    /* IE10+ specific styles go here */
+	.d-header .md-nav-drawer > .md-user-info:after {
+		top: 0;
+	}
 }
 .d-header .md-nav-drawer > .md-user-info > .user-avatar {
 	margin: 8px 16px;

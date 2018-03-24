@@ -59,7 +59,8 @@ window.onMDNavDrawerToggled = function(isOpen) {};const GlobalState = Ember.Obje
     currentPath: document.location.pathname,
     currentToolbar: null,
     showSearchbar: false,
-    showNavDrawer: false
+    showNavDrawer: false,
+    navDrawerIsPermanent: false
 });
 
 const globalState = GlobalState.create();
@@ -70,7 +71,19 @@ api.onPageChange((url, title)=> {
     const appEvents = api.container.lookup('app-events:main');
     appEvents.trigger('msktheme:page-change')
 });
-function getCurrentPath() {
+
+window.MDNavDrawerUpdatePermanent = function() {
+    globalState.set('navDrawerIsPermanent', ($(window).width()>1110+300));
+}
+
+window.MDNavDrawerIsPermanent = function() {
+    return globalState.get('navDrawerIsPermanent');
+}
+
+window.MDNavDrawerUpdatePermanent();
+if (globalState.get('navDrawerIsPermanent')) {
+    globalState.set('showNavDrawer', true);
+}function getCurrentPath() {
     return globalState.get('currentPath')
 }
 
@@ -129,20 +142,22 @@ function getTitle() {
         }
         return I18n.t(`filters${path.replace('/','.')}.title`)
     }
-    const regexpCategory = /\/c\/([^\/]+)/
-    const regexpCategoryTag = /tags\/c\/([^\/]+)\/([^\/]+)/
-    const regexpTag = /tags\/([^\/]+)/
+    const regexpCategory = /^\/c\/([^\/]+)/
+    const regexpCategoryTag = /^\/tags\/c\/([^\/]+)\/([^\/]+)/
+    const regexpTag = /^\/tags\/([^\/]+)/
     let mo = path.match(regexpCategoryTag)
-    if (mo) {
-        return `${getCategoryNameBySlug(mo.group(1))} - ${mo.group(2)}`
+    if (!!mo) {
+        return `${getCategoryNameBySlug(mo[1])} - ${mo[2]}`
     }
     mo = path.match(regexpCategory)
-    if (mo) {
-        return getCategoryNameBySlug(mo.group(1))
+    if (!!mo) {
+        return getCategoryNameBySlug(mo[1]);
+    } else {
+        console.log(mo);
     }
     mo = path.match(regexpTag)
-    if (mo) {
-        return (mo.group(1))
+    if (!!mo) {
+        return mo[1];
     }
     return undefined
 }
@@ -419,8 +434,13 @@ api.createWidget('md-toolbar-search', _.extend({}, {
 api.createWidget('md-nav-drawer', {
     tagName: 'div.md-nav-drawer',
     buildClasses() {
-        if (!globalState.get('showNavDrawer')) {
+        if (globalState.get('navDrawerIsPermanent')
+            && globalState.get('showNavDrawer')) {
+            return ['permanent']
+        } else if (!globalState.get('showNavDrawer')) {
             return ['inactive']
+        } else {
+            return []
         }
     },
     userInfo() {
@@ -443,7 +463,9 @@ api.createWidget('md-nav-drawer', {
             user.get('name')
         ]);
         return api.h('div.md-user-info', {
-            style: `background-image: url(${user.get('navbar_background')})`
+            style: {
+                'background-image': `url(${user.get('navbar_background')})`
+            }
         }, [
             userAvatar,
             userNames,
@@ -501,12 +523,13 @@ api.createWidget('md-nav-drawer', {
         globalState.addObserver('showNavDrawer', ()=>{
             this.scheduleRerender();
         });
+        globalState.addObserver('navDrawerIsPermanent', ()=>{
+            this.scheduleRerender();
+        });
         this.user = getUser();
         window.onMDNavDrawerToggled || window.onMDNavDrawerToggled(globalState.get('showNavDrawer'));
 
-        if (!globalState.get('showNavDrawer')) {
-            return [];
-        } else if (!Discourse.User.current()) {
+        if (!Discourse.User.current()) {
             return [
                 this.userInfo(),
                 this.account(),
@@ -525,10 +548,9 @@ api.createWidget('md-nav-drawer', {
     click(e) {
         if (!aClickHandler(e)) {
             return false;
-        } else if (e.target.id === 'logout') {
+        } else if ($(e.target).is('a#logout, a#logout *')) {
             e.preventDefault();
-            //api.container.lookup("controller:application").send("logout");
-            logout();
+            api.container.lookup("controller:application").send("logout");
             return false
         } else {
             return false;
@@ -1031,7 +1053,7 @@ api.createWidget('md-nav-drawer', {
 api.createWidget('mdnavbar-categories', {
     tagName: 'div#categories',
     categories() {
-        const site = Discourse.Site.current();
+        const site = this.site;
         let result = [];
         // add category entries
 		for (var i = 0; i < site.categories.length - 1; i++) {
@@ -1039,7 +1061,11 @@ api.createWidget('mdnavbar-categories', {
 		        href: site.categories[i].get('url'),
 		        'data-auto-route': 'true'
 		    }, [
-		        api.h('div.list-icon', {style: `background-color: #${site.categories[i].get('color')}`}),
+		        api.h('div.list-icon', {
+                    style: {
+                        'background-color': `#${site.categories[i].get('color')}`
+                    }
+                }),
 		        api.h('span', site.categories[i].get('name'))
             ]));
 		}
@@ -1081,19 +1107,15 @@ api.reopenWidget('header', {
 <script>
 
 $(document).ready(function(){
-    $('#main').on('click.close-nav-bar', '.md-entry' ,function (e) {
-        $('#overlay').click();
-        return true;
-    });
-    
-    $('#main').on('click.do-logout', 'a#logout.md-entry' ,function (e) {
-        Discourse.__container__.lookup("controller:application").send("logout");
-        return true;
-    });
-    
-    $('#main').on('click.close-nav-bar-user-info', '#user-info a' ,function (e) {
-        $('#overlay').click();
-        return true;
-    });
+    function updatePermanent() {
+        MDNavDrawerUpdatePermanent();
+        if (MDNavDrawerIsPermanent()) {
+            $('header.d-header').parent().addClass('permanent-nav-drawer');
+        } else {
+            $('header.d-header').parent().removeClass('permanent-nav-drawer');
+        }
+    }
+    $(window).resize(updatePermanent);
+    updatePermanent();
 });
 </script>

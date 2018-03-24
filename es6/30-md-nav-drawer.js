@@ -2,8 +2,13 @@
 api.createWidget('md-nav-drawer', {
     tagName: 'div.md-nav-drawer',
     buildClasses() {
-        if (!globalState.get('showNavDrawer')) {
+        if (globalState.get('navDrawerIsPermanent')
+            && globalState.get('showNavDrawer')) {
+            return ['permanent']
+        } else if (!globalState.get('showNavDrawer')) {
             return ['inactive']
+        } else {
+            return []
         }
     },
     userInfo() {
@@ -26,7 +31,9 @@ api.createWidget('md-nav-drawer', {
             user.get('name')
         ]);
         return api.h('div.md-user-info', {
-            style: `background-image: url(${user.get('navbar_background')})`
+            style: {
+                'background-image': `url(${user.get('navbar_background')})`
+            }
         }, [
             userAvatar,
             userNames,
@@ -84,12 +91,13 @@ api.createWidget('md-nav-drawer', {
         globalState.addObserver('showNavDrawer', ()=>{
             this.scheduleRerender();
         });
+        globalState.addObserver('navDrawerIsPermanent', ()=>{
+            this.scheduleRerender();
+        });
         this.user = getUser();
         window.onMDNavDrawerToggled || window.onMDNavDrawerToggled(globalState.get('showNavDrawer'));
 
-        if (!globalState.get('showNavDrawer')) {
-            return [];
-        } else if (!Discourse.User.current()) {
+        if (!Discourse.User.current()) {
             return [
                 this.userInfo(),
                 this.account(),
@@ -108,10 +116,9 @@ api.createWidget('md-nav-drawer', {
     click(e) {
         if (!aClickHandler(e)) {
             return false;
-        } else if (e.target.id === 'logout') {
+        } else if ($(e.target).is('a#logout, a#logout *')) {
             e.preventDefault();
-            //api.container.lookup("controller:application").send("logout");
-            logout();
+            api.container.lookup("controller:application").send("logout");
             return false
         } else {
             return false;
