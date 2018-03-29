@@ -5,6 +5,8 @@ html {
   font-size: 15px;
   line-height: 18px; }
 
+/* =====================   Colors   ===================== */
+/* ===================== Elevations ===================== */
 /* ============================== 当前目录 ============================== */
 .list-controls {
   margin: 0 -16px; }
@@ -50,6 +52,8 @@ html {
   float: right;
   content: "arrow_drop_down";
   font-family: 'Material Icons';
+  content: "\F35D";
+  font-family: 'Material Design Icons';
   font-size: 20px; }
 
 .list-controls a.dropdown-header.category-dropdown-button,
@@ -67,7 +71,7 @@ html {
   padding: 4px 0;
   border: none;
   border-radius: 2px;
-  box-shadow: var(--MDELEV2);
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12);
   animation: dropdown-menu 0.25s; }
 
 @keyframes dropdown-menu {

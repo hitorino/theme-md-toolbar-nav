@@ -4,5 +4,11 @@
   "assets": {
   },
   "color_schemes": {
+    "Material Design Pink": {
+      "header_background": "ff8888",
+      "tertiary": "5d5e62",
+      "quaternary": "4cade2",
+      "header_primary": "ffffff"
+    }
   }
 }

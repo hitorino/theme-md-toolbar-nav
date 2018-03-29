@@ -137,7 +137,8 @@ i.mdi:before {
     height: 24px;
     line-height: 24px;
 	vertical-align: middle;
-    margin: 0 8px;
+	margin: 0 8px;
+	color: $MDFOREFRONTCOLOR;
 }
 #toolbar .md-title > span {
     font-size: 24px;
@@ -182,6 +183,7 @@ i.mdi:before {
 	left: 0;
 	height: 100%;
 	width: 100%;
+    background-color: rgba(0,0,0,0.35);
 }
 
 .d-header > #overlay.inactive {

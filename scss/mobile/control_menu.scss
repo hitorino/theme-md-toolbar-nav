@@ -1,3 +1,4 @@
+@import '../icons';
 /* ============================== 当前目录 ============================== */
 .list-controls {
 	margin: 0 -16px;
@@ -43,6 +44,8 @@
 	float: right;
 	content: "arrow_drop_down";
 	font-family: 'Material Icons';
+	content: mdi("menu-down");
+	font-family: 'Material Design Icons';
 	font-size: 20px;
 }
 .list-controls a.dropdown-header.category-dropdown-button,
@@ -60,7 +63,7 @@
 	padding: 4px 0;
 	border: none;
 	border-radius: 2px;
-	box-shadow: var(--MDELEV2);
+	box-shadow: $MDELEV2;
 	animation: dropdown-menu 0.25s;
 }
 @keyframes dropdown-menu {

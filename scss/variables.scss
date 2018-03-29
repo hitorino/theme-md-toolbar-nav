@@ -1,8 +1,10 @@
 /* =====================   Colors   ===================== */
 
 $MDPRIMARYCOLOR: #ff8888;
+$MDPRIMARYCOLOR: var(--header-background);
 $MDPRIMARYCOLOR-LIGHT: #ffaaaa;
 $MDSECONDARYCOLOR: orange;
+$MDFOREFRONTCOLOR: var(--header-primary);
 
 /* ===================== Elevations ===================== */
     $MDELEV1: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
