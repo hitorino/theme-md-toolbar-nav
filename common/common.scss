@@ -697,60 +697,56 @@ i.mdi:before {
   color: white;
   opacity: 0.85; }
 
+/* ============================== 帖子列表 ============================== */
 .post-card {
   display: flex;
   flex-direction: column;
   margin: 20px auto;
   padding: 10px;
   width: 580px;
-  box-shadow: var(--MDELEV2);
-  .post-card-head {
+  border-radius: 3px;
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12); }
+  .post-card .post-card-head {
     display: flex;
     width: 580px;
-    height: 48px;
-    > a {
-      display: block;
-      img.avatar {
+    height: 48px; }
+    .post-card .post-card-head > a {
+      display: block; }
+      .post-card .post-card-head > a img.avatar {
         width: 48px;
         height: 48px;
-        border-radius: 50%;
-      }
-    }
-    .head-detail {
+        border-radius: 50%; }
+    .post-card .post-card-head .head-detail {
       margin-left: 15px;
       display: flex;
       justify-content: space-between;
       flex-direction: column;
-      flex-grow: 1;
-      .post-title {
+      flex-grow: 1; }
+      .post-card .post-card-head .head-detail .post-title {
         display: flex;
         height: 24px;
         line-height: 24px;
-        white-space: nowrap;
-        a.title {
+        white-space: nowrap; }
+        .post-card .post-card-head .head-detail .post-title a.title {
           flex-grow: 1;
           max-width: 440px !important;
           font-size: 16px;
           color: #000;
           overflow: hidden;
           white-space: nowrap;
-          text-overflow: ellipsis;
-        }
-        span.post-activity {
-          text-align: right;
-          a.post-activity {
+          text-overflow: ellipsis; }
+        .post-card .post-card-head .head-detail .post-title span.post-activity {
+          text-align: right; }
+          .post-card .post-card-head .head-detail .post-title span.post-activity a.post-activity {
             font-size: 14px;
-            color: #999
-          }
-        }
-      }
-      .post-tags {
+            color: #999; }
+      .post-card .post-card-head .head-detail .post-tags {
         display: flex;
         height: 18px;
         font-size: 12px;
         color: #fff;
-        white-space: nowrap;
-        a.category-badge {
+        white-space: nowrap; }
+        .post-card .post-card-head .head-detail .post-tags a.category-badge {
           margin-right: 14px;
           padding: 0 6px;
           height: 18px;
@@ -758,9 +754,8 @@ i.mdi:before {
           background-color: #ff0000;
           border-radius: 8px;
           font-size: 12px;
-          color: #fff;
-        }
-        div.discourse-tags a {
+          color: #fff; }
+        .post-card .post-card-head .head-detail .post-tags div.discourse-tags a {
           margin-right: 14px;
           padding: 0 6px;
           height: 18px;
@@ -769,42 +764,31 @@ i.mdi:before {
           border-radius: 8px;
           font-size: 12px;
           color: #fff;
-          top: 0;
-        }
-      }
-    }
-  }
-  .post-body {
+          top: 0; }
+  .post-card .post-body {
     margin-top: 16px;
     font-size: 14px;
     color: #666;
     line-height: 22px;
     max-height: 110px;
     overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .post-footer {
+    text-overflow: ellipsis; }
+  .post-card .post-footer {
     display: flex;
     margin-top: 16px;
     font-size: 14px;
-    color: #999;
-    > span {
-      max-width: 64px;
-        i.d-icon,
-        span.number {
-          padding-right: 16px;
-        }
-      }
-    a.last-poster {
+    color: #999; }
+    .post-card .post-footer > span {
+      display: flex;
+      width: 64px;
+      justify-content: space-around;
+      align-items: center; }
+    .post-card .post-footer a.last-poster {
       flex-grow: 1;
       text-align: right;
-      color: #999;
-      img.avatar {
+      color: #999; }
+      .post-card .post-footer a.last-poster img.avatar {
         margin-left: 16px;
         width: 24px;
         height: 24px;
-        border-radius: 50%;
-      }
-    }
-  }
-}
+        border-radius: 50%; }

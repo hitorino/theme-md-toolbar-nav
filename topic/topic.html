@@ -1,0 +1,54 @@
+<script>
+    const TopicListItem = require('discourse/components/topic-list-item').default;
+    const computed = require('ember-addons/ember-computed-decorators').default;
+    TopicListItem.reopen({
+    });
+</script>
+<script type='text/x-handlebars' data-template-name='list/topic-list-item.raw'>
+    <div class="post-card">
+        <div class="post-card-head">
+            <a href="{{topic.posters.firstObject.user.path}}" data-user-card="{{topic.posters.firstObject.user.username}}">
+                {{avatar topic.posters.firstObject avatarTemplatePath="user.avatar_template" usernamePath="user.username" imageSize="small"}}
+            </a>
+            <span class="head-detail">
+                <div class="post-title">
+                    {{topic-link topic class="raw-link raw-topic-link"}}
+                    {{raw "list/activity-column" topic=topic class="post-activity" tagName="span"}}
+                </div>
+                <div class="post-tags">
+                    <a class="category-badge" href="{{topic.category.url}}">{{topic.category.name}}</a>
+                    {{discourse-tags topic mode="list" tagsForUser=tagsForUser}}
+                </div>
+            <span>
+        </div>
+        {{#if topic.hasExcerpt}}
+        <div class="post-body">{{dir-span topic.escapedExcerpt}}</div>
+        {{/if}}
+        <div class="post-footer">
+            <span class="post-views">{{d-icon "book"}} {{number topic.views numberKey="views_long"}}</span>
+            <span class="post-participants">{{d-icon "comments"}} {{number topic.replyCount noTitle="true"}}</span>
+            <span class="post-like">{{d-icon "heart"}} {{number topic.like_count}}</span>
+            <span class="post-bookmark">{{d-icon "bookmark"}} {{number topic.like_count}}</span>
+            <a class="last-poster" href="{{topic.posters.lastObject.user.path}}" data-user-card="{{topic.posters.lastObject.user.username}}">
+                最后回复{{avatar topic.posters.lastObject avatarTemplatePath="user.avatar_template" usernamePath="user.username" imageSize="small"}}
+            </a>
+        </div>
+    </div>
+</script>
+<script type="text/x-handlebars" data-template-name="components/topic-list">
+    {{#each filteredTopics as |topic|}}
+        {{topic-list-item topic=topic
+                          bulkSelectEnabled=bulkSelectEnabled
+                          showTopicPostBadges=showTopicPostBadges
+                          hideCategory=hideCategory
+                          showPosters=showPosters
+                          showParticipants=showParticipants
+                          showLikes=showLikes
+                          showOpLikes=showOpLikes
+                          expandGloballyPinned=expandGloballyPinned
+                          expandAllPinned=expandAllPinned
+                          lastVisitedTopic=lastVisitedTopic
+                          selected=selected
+                          tagsForUser=tagsForUser}}
+    {{/each}}
+</script>

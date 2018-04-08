@@ -1119,7 +1119,6 @@ $(document).ready(function(){
     updatePermanent();
 });
 </script>
-
 <script>
     const TopicListItem = require('discourse/components/topic-list-item').default;
     const computed = require('ember-addons/ember-computed-decorators').default;
@@ -1147,8 +1146,8 @@ $(document).ready(function(){
         <div class="post-body">{{dir-span topic.escapedExcerpt}}</div>
         {{/if}}
         <div class="post-footer">
-            <span class="post-views">{{d-icon "heart"}} {{number topic.views numberKey="views_long"}}</span>
-            <span class="post-participants">{{d-icon "heart"}} {{number topic.replyCount noTitle="true"}}</span>
+            <span class="post-views">{{d-icon "book"}} {{number topic.views numberKey="views_long"}}</span>
+            <span class="post-participants">{{d-icon "comments"}} {{number topic.replyCount noTitle="true"}}</span>
             <span class="post-like">{{d-icon "heart"}} {{number topic.like_count}}</span>
             <span class="post-bookmark">{{d-icon "bookmark"}} {{number topic.like_count}}</span>
             <a class="last-poster" href="{{topic.posters.lastObject.user.path}}" data-user-card="{{topic.posters.lastObject.user.username}}">
