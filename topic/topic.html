@@ -1,10 +1,17 @@
 <script>
-    const TopicListItem = require('discourse/components/topic-list-item').default;
-    const computed = require('ember-addons/ember-computed-decorators').default;
+    var TopicListItem = require('discourse/components/topic-list-item').default;
+    var computed = require('ember-addons/ember-computed-decorators').default;
+    var findRawTemplate = require('discourse/lib/raw-templates').findRawTemplate;
     TopicListItem.reopen({
+        buildBuffer: function (buffer) {
+            var template = findRawTemplate('topic-list-item-override');
+            if (template) {
+                buffer.push(template(this));
+            }
+        }
     });
 </script>
-<script type='text/x-handlebars' data-template-name='list/topic-list-item.raw'>
+<script type='text/x-handlebars' data-template-name='topic-list-item-override.raw'>
     <div class="post-card">
         <div class="post-card-head">
             <a href="{{topic.posters.firstObject.user.path}}" data-user-card="{{topic.posters.firstObject.user.username}}">
