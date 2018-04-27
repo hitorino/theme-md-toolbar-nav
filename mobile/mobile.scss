@@ -119,3 +119,16 @@ html {
 
 #reply-control.edit-title.open {
   z-index: 2003; }
+
+.post-card {
+  margin: auto;
+  padding: 16px;
+  width: 355px;
+  height: auto;
+  box-shadow: unset;
+  border-top: 1px solid #eee;
+  box-sizing: border-box; }
+  .post-card .post-footer button svg {
+    margin: 0 8px 0 0;
+    width: 20px;
+    height: 20px; }

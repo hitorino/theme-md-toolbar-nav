@@ -407,18 +407,18 @@ i.mdi:before {
   color: #fff; }
 
 .md-button:not(.initial):hover {
-  background-color: orange;
+  background-color: #ffa500;
   animation: md-button-hover .5s ease-out; }
 
 @keyframes md-button-hover {
   0% {
     background-color: transparent; }
   100% {
-    background-color: orange; } }
+    background-color: #ffa500; } }
 
 @keyframes md-button-leave {
   0% {
-    background-color: orange; }
+    background-color: #ffa500; }
   100% {
     background-color: transparent; } }
 
@@ -702,7 +702,7 @@ i.mdi:before {
   display: flex;
   flex-direction: column;
   margin: 20px auto;
-  padding: 10px;
+  padding: 16px;
   width: 580px;
   border-radius: 3px;
   box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12); }
@@ -739,6 +739,8 @@ i.mdi:before {
           text-align: right; }
           .post-card .post-card-head .head-detail .post-title span.post-activity a.post-activity {
             font-size: 14px;
+            color: #999; }
+          .post-card .post-card-head .head-detail .post-title span.post-activity span.relative-date {
             color: #999; }
       .post-card .post-card-head .head-detail .post-tags {
         display: flex;
@@ -778,11 +780,20 @@ i.mdi:before {
     margin-top: 16px;
     font-size: 14px;
     color: #999; }
-    .post-card .post-footer > span {
+    .post-card .post-footer > button {
       display: flex;
-      width: 64px;
-      justify-content: space-around;
+      padding: 0;
+      width: 96px;
       align-items: center; }
+      .post-card .post-footer > button svg {
+        width: 24px;
+        height: 24px;
+        margin: 0 8px;
+        flex-shrink: 0; }
+        .post-card .post-footer > button svg:active {
+          background-color: #ffa500; }
+      .post-card .post-footer > button span.number {
+        margin: 0 8px; }
     .post-card .post-footer a.last-poster {
       flex-grow: 1;
       text-align: right;
