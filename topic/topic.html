@@ -22,7 +22,8 @@
                 }).catch(popupAjaxError).finally(() => {
                     this.set('liking', false);
                 })
-            } else if (!this.get('topic_post_liked') && this.get('topic_post_can_like')) {
+            } 
+            if (!this.get('topic_post_liked') && this.get('topic_post_can_like')) {
                 return ajax('/post_actions', {
                     type: 'POST',
                     dataType: 'json',
@@ -37,6 +38,7 @@
                     this.set('liking', false)
                 });
             }
+            return Ember.RSVP.Promise.resolve();
         }
     })
     TopicListItem.reopen({
