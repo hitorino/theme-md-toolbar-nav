@@ -128,7 +128,13 @@ html {
   box-shadow: unset;
   border-top: 1px solid #eee;
   box-sizing: border-box; }
-  .post-card .post-footer button svg {
-    margin: 0 8px 0 0;
-    width: 20px;
-    height: 20px; }
+  .post-card .post-footer button {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+    .post-card .post-footer button svg {
+      margin: 0 8px 0 0;
+      width: 20px;
+      height: 20px; }
+  .post-card .post-footer .post-like.active-animation::after,
+  .post-card .post-footer .post-bookmark.active-animation::after {
+    top: -10px;
+    left: -10px; }

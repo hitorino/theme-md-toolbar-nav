@@ -2,7 +2,7 @@
 .post-card {
   display: flex;
   flex-direction: column;
-  margin: 20px auto;
+  margin: 12px auto;
   padding: 16px;
   width: 580px;
   border-radius: 3px;
@@ -88,6 +88,7 @@
     max-height: 110px;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: justify;
   }
   .post-footer {
     display: flex;
@@ -104,12 +105,48 @@
         height: 24px;
         margin: 0 8px;
         flex-shrink: 0;
-        &:active {
-          background-color: $MDSECONDARYCOLOR;
-        }
       }
       span.number {
         margin: 0 8px;
+      }
+    }
+    @keyframes post-btn-active {
+      0% {
+      }
+      65% {
+        transform: scale(1);
+        opacity: 0.1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0.1;
+      }
+    }
+    .post-like,
+    .post-bookmark {
+      position: relative;
+      &.active-animation::after {
+        content: ' ';
+        position: absolute;
+        display: block;
+        left: 0;
+        top: -8px;
+        width: 40px;
+        height: 40px;
+        background-color: #ffa500;
+        border-radius: 50%;
+        opacity: 0.5;
+        transform: scale(0);
+        animation: post-btn-active 0.3s ease-out;
+        animation-iteration-count: 1;
+      }
+      svg {
+        z-index: 1;
+        &:hover {
+          path {
+            fill: $MDPRIMARYCOLOR;
+          }
+        }
       }
     }
     a.last-poster {

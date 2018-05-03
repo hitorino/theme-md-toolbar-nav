@@ -701,7 +701,7 @@ i.mdi:before {
 .post-card {
   display: flex;
   flex-direction: column;
-  margin: 20px auto;
+  margin: 12px auto;
   padding: 16px;
   width: 580px;
   border-radius: 3px;
@@ -774,7 +774,8 @@ i.mdi:before {
     line-height: 22px;
     max-height: 110px;
     overflow: hidden;
-    text-overflow: ellipsis; }
+    text-overflow: ellipsis;
+    text-align: justify; }
   .post-card .post-footer {
     display: flex;
     margin-top: 16px;
@@ -790,10 +791,41 @@ i.mdi:before {
         height: 24px;
         margin: 0 8px;
         flex-shrink: 0; }
-        .post-card .post-footer > button svg:active {
-          background-color: #ffa500; }
       .post-card .post-footer > button span.number {
         margin: 0 8px; }
+
+@keyframes post-btn-active {
+  0% { }
+  65% {
+    transform: scale(1);
+    opacity: 0.1; }
+  100% {
+    transform: scale(1);
+    opacity: 0.1; } }
+    .post-card .post-footer .post-like,
+    .post-card .post-footer .post-bookmark {
+      position: relative; }
+      .post-card .post-footer .post-like.active-animation::after,
+      .post-card .post-footer .post-bookmark.active-animation::after {
+        content: ' ';
+        position: absolute;
+        display: block;
+        left: 0;
+        top: -8px;
+        width: 40px;
+        height: 40px;
+        background-color: #ffa500;
+        border-radius: 50%;
+        opacity: 0.5;
+        transform: scale(0);
+        animation: post-btn-active 0.3s ease-out;
+        animation-iteration-count: 1; }
+      .post-card .post-footer .post-like svg,
+      .post-card .post-footer .post-bookmark svg {
+        z-index: 1; }
+        .post-card .post-footer .post-like svg:hover path,
+        .post-card .post-footer .post-bookmark svg:hover path {
+          fill: #ff8888; }
     .post-card .post-footer a.last-poster {
       flex-grow: 1;
       text-align: right;
