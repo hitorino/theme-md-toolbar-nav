@@ -131,9 +131,11 @@ html {
   .post-card .post-card-head .head-detail .post-title a.title {
     max-width: 260px !important; }
   .post-card .post-footer button svg {
-    margin: 0 8px 0 0;
+    margin: 0 4px 0 0;
     width: 20px;
     height: 20px; }
+  .post-card .post-footer button span.number {
+    margin: 0 4px; }
   .post-card .post-footer .post-like.active-animation::after,
   .post-card .post-footer .post-bookmark.active-animation::after {
     top: -10px;
