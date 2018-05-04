@@ -700,14 +700,18 @@ i.mdi:before {
 /* ============================== 帖子列表 ============================== */
 .post-card {
   display: flex;
+  display: -webkit-flex;
   flex-direction: column;
+  -webkit-flex-direction: column;
   margin: 12px auto;
   padding: 16px;
   width: 580px;
   border-radius: 3px;
-  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12); }
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
   .post-card .post-card-head {
     display: flex;
+    display: -webkit-flex;
     width: 580px;
     height: 48px; }
     .post-card .post-card-head > a {
@@ -719,16 +723,22 @@ i.mdi:before {
     .post-card .post-card-head .head-detail {
       margin-left: 15px;
       display: flex;
+      display: -webkit-flex;
       justify-content: space-between;
+      -webkit-justify-content: space-between;
       flex-direction: column;
-      flex-grow: 1; }
+      -webkit-flex-direction: column;
+      flex-grow: 1;
+      -webkit-flex-grow: 1; }
       .post-card .post-card-head .head-detail .post-title {
         display: flex;
+        display: -webkit-flex;
         height: 24px;
         line-height: 24px;
         white-space: nowrap; }
         .post-card .post-card-head .head-detail .post-title a.title {
           flex-grow: 1;
+          -webkit-flex-grow: 1;
           max-width: 440px !important;
           font-size: 16px;
           color: #000;
@@ -744,6 +754,7 @@ i.mdi:before {
             color: #999; }
       .post-card .post-card-head .head-detail .post-tags {
         display: flex;
+        display: -webkit-flex;
         height: 18px;
         font-size: 12px;
         color: #fff;
@@ -775,17 +786,26 @@ i.mdi:before {
     max-height: 110px;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-align: justify; }
+    text-align: justify;
+    word-break: break-all;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5; }
   .post-card .post-footer {
     display: flex;
+    display: -webkit-flex;
     margin-top: 16px;
     font-size: 14px;
     color: #999; }
     .post-card .post-footer > button {
       display: flex;
+      display: -webkit-flex;
       padding: 0;
       width: 96px;
-      align-items: center; }
+      align-items: center;
+      -webkit-align-items: center; }
+      .post-card .post-footer > button.disabled {
+        pointer-events: none; }
       .post-card .post-footer > button svg {
         width: 24px;
         height: 24px;
@@ -802,6 +822,14 @@ i.mdi:before {
   100% {
     transform: scale(1);
     opacity: 0.1; } }
+    .post-card .post-footer .post-views {
+      cursor: auto; }
+      .post-card .post-footer .post-views svg {
+        transform: translateY(-1px); }
+    .post-card .post-footer .post-participants {
+      cursor: auto; }
+      .post-card .post-footer .post-participants svg {
+        transform: translateY(1px); }
     .post-card .post-footer .post-like,
     .post-card .post-footer .post-bookmark {
       position: relative; }
@@ -823,11 +851,15 @@ i.mdi:before {
       .post-card .post-footer .post-like svg,
       .post-card .post-footer .post-bookmark svg {
         z-index: 1; }
+        .post-card .post-footer .post-like svg path,
+        .post-card .post-footer .post-bookmark svg path {
+          transition: all 0.5s; }
         .post-card .post-footer .post-like svg:hover path,
         .post-card .post-footer .post-bookmark svg:hover path {
           fill: #ff8888; }
     .post-card .post-footer a.last-poster {
       flex-grow: 1;
+      -webkit-flex-grow: 1;
       text-align: right;
       color: #999; }
       .post-card .post-footer a.last-poster img.avatar {

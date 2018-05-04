@@ -1,14 +1,18 @@
 /* ============================== 帖子列表 ============================== */
 .post-card {
   display: flex;
+  display: -webkit-flex;
   flex-direction: column;
+  -webkit-flex-direction: column;
   margin: 12px auto;
   padding: 16px;
   width: 580px;
   border-radius: 3px;
   box-shadow: $MDELEV2;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   .post-card-head {
     display: flex;
+    display: -webkit-flex;
     width: 580px;
     height: 48px;
     > a {
@@ -22,16 +26,22 @@
     .head-detail {
       margin-left: 15px;
       display: flex;
+      display: -webkit-flex;
       justify-content: space-between;
+      -webkit-justify-content: space-between;
       flex-direction: column;
+      -webkit-flex-direction: column;
       flex-grow: 1;
+      -webkit-flex-grow: 1;
       .post-title {
         display: flex;
+        display: -webkit-flex;
         height: 24px;
         line-height: 24px;
         white-space: nowrap;
         a.title {
           flex-grow: 1;
+          -webkit-flex-grow: 1;
           max-width: 440px !important;
           font-size: 16px;
           color: #000;
@@ -52,6 +62,7 @@
       }
       .post-tags {
         display: flex;
+        display: -webkit-flex;
         height: 18px;
         font-size: 12px;
         color: #fff;
@@ -89,17 +100,27 @@
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: justify;
+    word-break: break-all;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
   }
   .post-footer {
     display: flex;
+    display: -webkit-flex;
     margin-top: 16px;
     font-size: 14px;
     color: #999;
     > button {
       display: flex;
+      display: -webkit-flex;
       padding: 0;
       width: 96px;
       align-items: center;
+      -webkit-align-items: center;
+      &.disabled {
+        pointer-events: none;
+      }
       svg {
         width: 24px;
         height: 24px;
@@ -122,6 +143,18 @@
         opacity: 0.1;
       }
     }
+    .post-views {
+      cursor: auto;
+      svg {
+        transform: translateY(-1px);
+      }
+    }
+    .post-participants {
+      cursor: auto;
+      svg {
+        transform: translateY(1px);
+      }
+    }
     .post-like,
     .post-bookmark {
       position: relative;
@@ -142,6 +175,9 @@
       }
       svg {
         z-index: 1;
+        path {
+          transition: all 0.5s;
+        }
         &:hover {
           path {
             fill: $MDPRIMARYCOLOR;
@@ -151,6 +187,7 @@
     }
     a.last-poster {
       flex-grow: 1;
+      -webkit-flex-grow: 1;
       text-align: right;
       color: #999;
       img.avatar {
