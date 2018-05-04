@@ -77,16 +77,20 @@
           font-size: 12px;
           color: #fff;
         }
-        div.discourse-tags a {
-          margin-right: 14px;
-          padding: 0 6px;
-          height: 18px;
-          line-height: 18px;
-          background-color: gray;
-          border-radius: 8px;
-          font-size: 12px;
-          color: #fff;
-          top: 0;
+        div.discourse-tags {
+          display: flex;
+          display: -webkit-flex;
+          a {
+            margin-right: 14px;
+            padding: 0 6px;
+            height: 18px;
+            line-height: 18px;
+            background-color: gray;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #fff;
+            top: 0;
+          }
         }
       }
     }
