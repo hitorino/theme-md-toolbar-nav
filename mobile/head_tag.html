@@ -2,7 +2,7 @@
     <div class="post-card">
         <div class="post-card-head">
             <a href="{{topic.posters.firstObject.user.path}}" data-user-card="{{topic.posters.firstObject.user.username}}">
-                {{avatar topic.posters.firstObject avatarTemplatePath="user.avatar_template" usernamePath="user.username" imageSize="small"}}
+                {{avatar topic.posters.firstObject avatarTemplatePath="user.avatar_template" usernamePath="user.username" imageSize="large"}}
             </a>
             <span class="head-detail">
                 <div class="post-title">
@@ -15,7 +15,7 @@
             <span>
         </div>
         {{#if topic.hasExcerpt}}
-        <div class="post-body">{{dir-span topic.escapedExcerpt}}</div>
+        <div class="post-body">topic.escapedExcerpt</div>
         {{/if}}
         <div class="post-footer">
             <button class="post-views widget-button btn-flat">

@@ -130,13 +130,21 @@ html {
   box-sizing: border-box; }
   .post-card .post-card-head .head-detail .post-title a.title {
     max-width: 260px !important; }
-  .post-card .post-footer button svg {
-    margin: 0 4px 0 0;
-    width: 20px;
-    height: 20px; }
-  .post-card .post-footer button span.number {
-    margin: 0 4px; }
+  .post-card .post-footer button {
+    flex-shrink: 0;
+    -webkit-flex-shrink: 0;
+    width: 64px; }
+    .post-card .post-footer button svg {
+      margin: 0 4px 0 0;
+      width: 20px;
+      height: 20px; }
+    .post-card .post-footer button span.number {
+      margin: 0 4px; }
   .post-card .post-footer .post-like.active-animation::after,
   .post-card .post-footer .post-bookmark.active-animation::after {
     top: -10px;
     left: -10px; }
+  .post-card .post-footer .post-activity {
+    flex-grow: 1;
+    -webkit-flex-grow: 1;
+    text-align: right; }

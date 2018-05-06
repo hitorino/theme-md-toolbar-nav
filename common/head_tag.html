@@ -1204,7 +1204,7 @@ $(document).ready(function(){
     <div class="post-card">
         <div class="post-card-head">
             <a href="{{topic.posters.firstObject.user.path}}" data-user-card="{{topic.posters.firstObject.user.username}}">
-                {{avatar topic.posters.firstObject avatarTemplatePath="user.avatar_template" usernamePath="user.username" imageSize="small"}}
+                {{avatar topic.posters.firstObject avatarTemplatePath="user.avatar_template" usernamePath="user.username" imageSize="large"}}
             </a>
             <span class="head-detail">
                 <div class="post-title">
@@ -1261,7 +1261,7 @@ $(document).ready(function(){
                 {{/if}}
             </button>
             <a class="last-poster" href="{{topic.posters.lastObject.user.path}}" data-user-card="{{topic.posters.lastObject.user.username}}">
-                最后回复{{avatar topic.posters.lastObject avatarTemplatePath="user.avatar_template" usernamePath="user.username" imageSize="small"}}
+                最后回复{{avatar topic.posters.lastObject avatarTemplatePath="user.avatar_template" usernamePath="user.username" imageSize="large"}}
             </a>
         </div>
     </div>

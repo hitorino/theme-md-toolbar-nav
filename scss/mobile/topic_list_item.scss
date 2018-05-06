@@ -17,6 +17,9 @@
     }
     .post-footer {
         button {
+            flex-shrink: 0;
+            -webkit-flex-shrink: 0;
+            width: 64px;
             svg {
                 margin: 0 4px 0 0;
                 width: 20px;
@@ -32,6 +35,11 @@
                 top: -10px;
                 left: -10px;
             }
+        }
+        .post-activity {
+            flex-grow: 1;
+            -webkit-flex-grow: 1;
+            text-align: right;
         }
     }
 }
