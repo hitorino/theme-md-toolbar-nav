@@ -15,7 +15,7 @@
             <span>
         </div>
         {{#if topic.hasExcerpt}}
-        <div class="post-body">topic.escapedExcerpt</div>
+        <div class="post-body">{{topic.escapedExcerpt}}</div>
         {{/if}}
         <div class="post-footer">
             <button class="post-views widget-button btn-flat">
@@ -52,8 +52,6 @@
                     {{else}}
                     <path fill="#999999" d="M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z" />
                     {{/if}}
-                </svg>
-                <svg  viewBox="0 0 24 24">
                 </svg>
             </button>
             {{raw "list/activity-column" topic=topic class="post-activity" tagName="span"}}

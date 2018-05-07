@@ -1,7 +1,7 @@
 .post-card {
-    margin: auto;
+    margin: 0;
     padding: 16px;
-    width: 355px;
+    width: 100vw;
     height: auto;
     box-shadow: unset;
     border-top: 1px solid #eee;
@@ -19,7 +19,7 @@
         button {
             flex-shrink: 0;
             -webkit-flex-shrink: 0;
-            width: 64px;
+            width: 72px;
             svg {
                 margin: 0 4px 0 0;
                 width: 20px;
@@ -35,6 +35,9 @@
                 top: -10px;
                 left: -10px;
             }
+        }
+        .post-bookmark {
+            width: 24px;
         }
         .post-activity {
             flex-grow: 1;

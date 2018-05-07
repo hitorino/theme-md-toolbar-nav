@@ -770,7 +770,8 @@ i.mdi:before {
           color: #fff; }
         .post-card .post-card-head .head-detail .post-tags div.discourse-tags {
           display: flex;
-          display: -webkit-flex; }
+          display: -webkit-flex;
+          margin: 0; }
           .post-card .post-card-head .head-detail .post-tags div.discourse-tags a {
             margin-right: 14px;
             padding: 0 6px;
