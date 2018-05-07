@@ -133,7 +133,9 @@ html {
   .post-card .post-footer button {
     flex-shrink: 0;
     -webkit-flex-shrink: 0;
-    width: 72px; }
+    width: 72px;
+    height: 20px;
+    line-height: 20px; }
     .post-card .post-footer button svg {
       margin: 0 4px 0 0;
       width: 20px;
