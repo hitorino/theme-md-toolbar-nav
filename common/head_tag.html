@@ -14,15 +14,15 @@ const escapeExpression = require('discourse/lib/utilities').escapeExpression;
 const formatUsername = require('discourse/lib/utilities').formatUsername;
 const setTransientHeader = require('discourse/lib/ajax').setTransientHeader;
 const iconNode = require('discourse-common/lib/icon-library').iconNode;
+const renderIcon = require('discourse-common/lib/icon-library').renderIcon;
+const replaceIcon = require('discourse-common/lib/icon-library').replaceIcon;
 
 const loadTopicView = require('discourse/models/topic').loadTopicView;
 const renderTag = require('discourse/lib/render-tag').default;
 const renderTags = require('discourse/lib/render-tags').default;
-
 function extendWidget(superName, subName, opts) {
     return api.createWidget(subName, _.extends({}, opts, api.reopenWidget(superName, {})));
 }
-
 
 function aClickHandler(e) {
     if (!e) {
@@ -52,116 +52,21 @@ function clickActionHandler(e) {
 if (Discourse.User.current()) {
     Discourse.User.current().findDetails();
 }
+{
+    window.MDGlobalState = Ember.Object.extend({
+        navDrawerIsPermanent: false,
+        navDrawerIsOpen: false
+    }).create();
+    window.MDNavDrawerUpdatePermanent = function() {
+        window.MDGlobalState.set('navDrawerIsPermanent', $(window).width()>1126+270);
+    };
 
+    window.MDNavDrawerIsPermanent = function() {
+        return window.MDGlobalState.get('navDrawerIsPermanent');
+    };
 
-window.onMDNavDrawerToggled = function(isOpen) {};const GlobalState = Ember.Object.extend({
-    currentPath: document.location.pathname,
-    currentToolbar: null,
-    showSearchbar: false,
-    showNavDrawer: false,
-    navDrawerIsPermanent: false
-});
-
-const globalState = GlobalState.create();
-
-
-api.onPageChange((url, title)=> {
-    globalState.set('currentPath', url)
-    const appEvents = api.container.lookup('app-events:main');
-    appEvents.trigger('msktheme:page-change')
-});
-
-window.MDNavDrawerUpdatePermanent = function() {
-    globalState.set('navDrawerIsPermanent', ($(window).width()>1110+300));
-}
-
-window.MDNavDrawerIsPermanent = function() {
-    return globalState.get('navDrawerIsPermanent');
-}
-
-window.MDNavDrawerUpdatePermanent();
-if (globalState.get('navDrawerIsPermanent')) {
-    globalState.set('showNavDrawer', true);
-}function getCurrentPath() {
-    return globalState.get('currentPath')
-}
-
-function isSpecialTopicList() {
-    const path = getCurrentPath()
-    if (path === '/') return true
-    return !!_.find(Discourse.Site.current().get('top_menu_items'),
-        (item)=>(`/${item}` === path))
-}
-
-function isTopicList() {    
-    const path = getCurrentPath()
-    return isSpecialTopicList() || path.startsWith('/c/')||path.startsWith('/tags/')
-}
-
-function isTopic() {
-    const path = getCurrentPath()
-    return !!path.startsWith('/t/')
-}
-
-function getCurrentToolbar() {
-    if (globalState.get('showSearchbar')) {
-        return 'search'
-    } else if (isTopicList()) {
-        return 'topic-list'
-    } else if (isTopic()) {
-        return 'topic'
-    }
-}
-
-globalState.set('currentToolbar',getCurrentToolbar())
-globalState.addObserver('currentPath', function() {
-    globalState.set('currentToolbar', getCurrentToolbar())
-})
-globalState.addObserver('showSearchbar', function() {
-    globalState.set('currentToolbar', getCurrentToolbar())
-})
-
-
-function getCategoryNameBySlug(slug) {
-    const site = Discourse.Site.current()
-    try {
-        return _.find(site.categories, function(c) {
-            return (c.get('slug') && c.get('slug') === slug)
-        }).get('name')
-    } catch (e) {
-        return '未命名'
-    }
-}
-
-function getTitle() {    
-    let path = getCurrentPath()
-    if (isSpecialTopicList()) {
-        if (path === '/') {
-            path = '/latest'
-        }
-        return I18n.t(`filters${path.replace('/','.')}.title`)
-    }
-    const regexpCategory = /^\/c\/([^\/]+)/
-    const regexpCategoryTag = /^\/tags\/c\/([^\/]+)\/([^\/]+)/
-    const regexpTag = /^\/tags\/([^\/]+)/
-    let mo = path.match(regexpCategoryTag)
-    if (!!mo) {
-        return `${getCategoryNameBySlug(mo[1])} - ${mo[2]}`
-    }
-    mo = path.match(regexpCategory)
-    if (!!mo) {
-        return getCategoryNameBySlug(mo[1]);
-    } else {
-        console.log(mo);
-    }
-    mo = path.match(regexpTag)
-    if (!!mo) {
-        return mo[1];
-    }
-    return undefined
-}
-
-function getUser() {
+    window.MDNavDrawerUpdatePermanent();
+};function getUser() {
     var user = Discourse.User.current();
     const navbar_background_default = "https://forum.hitorino.moe/uploads/default/original/1X/6e3efd0a3b368ef708e1b70c550359f01f701f50.png";
     if (!user) {
@@ -191,10 +96,15 @@ function getUser() {
                 : navbar_background_default));
     }
     return user;
-}
+}replaceIcon('settings', 'cog');
+replaceIcon('cellphone', 'mobile');
+
 function mdIcon (icon, isLight = false) {
     //api.h('i.material-icons.md-24.md-'+(isLight?'light':'dark'), icon)
-    return api.h(`i.material-icons.mdi.mdi-${icon.replace('_','-')}.md-24.md-${(isLight?'light':'dark')}`)
+    //return api.h(`i.material-icons.mdi.mdi-${icon.replace('_','-')}.md-24.md-${(isLight?'light':'dark')}`)
+    return renderIcon('node', icon, {
+        class: 'material-icons md-24 md-' + (isLight?'light':'dark')
+    });
 }
 
 function mdEntry (link, icon, text, count = 0, isExternalLink = false) {
@@ -211,235 +121,47 @@ function mdEntry (link, icon, text, count = 0, isExternalLink = false) {
         countSpan
     ]);
 };
-
-const MainToolbarTemplate = {
-    toolbarName: 'template',
-    buildClasses() {
-        return ['left']
-    }
-};
-api.createWidget('md-toolbar-search', _.extend({}, {
-    tagName: 'form.md-search.mdmaintoolbar.center',
-    buildAttributes() {
-        return {
-            action: '/search',
-            method: 'GET'
-        }
-    },
-    html(attr, state) {
-        if (!globalState.get('showSearchbar')) {
-            return false
-        }
-        return [
-            api.h('input#input-box.toolbar-title.center', {
-                name: 'q',
-                type: 'text',
-                placeholder: '搜索 hitorino'
-            }, [])
-        ];
-    },
-}, MainToolbarTemplate));api.createWidget('md-toolbar-topic-list', _.extend({}, {
-    tagName: 'div.for-topic-list.mdmaintoolbar.md-title.left',
-    
-    html(attr, state) {
-        return [
-                api.h('span', getTitle())
-        ];
-    }
-}, MainToolbarTemplate));api.createWidget('md-toolbar-topic', _.extend({}, {
-    tagName: 'div.for-topic.mdmaintoolbar.left.md-title',
-    
-    html(attr, state) {
-        const controller = this.register.lookup('controller:topic')
-        const model = controller.get('model')
-        const title = model.get('unicode_title') || model.get('title')
-        const tags = model.tags;
-        const isPrivateMessage = model.get('isPrivateMessage');
-        const tagsHtml = tags.map((tag) => {
-            return new RawHtml({
-                html: renderTag(tag, { isPrivateMessage })
-            })
-        })
-        return [
-                api.h('span', title),
-                tagsHtml
-        ];
-    }
-}, MainToolbarTemplate));
-{
-    api.createWidget('md-toolbar', {
-        tagName: 'div#toolbar.md-toolbar',
-        buildKey: () => 'mdtoolbar',
-        defaultState() {
-            return {
-                hide: false,
-                path: globalState.currentPath
-            };
-        },
-        html(attr, state) {
-            this.appEvents.off('msktheme:page-change');
-            this.appEvents.on('msktheme:page-change', ()=>{
-                state.path = getCurrentPath();
-                this.scheduleRerender();
-            });
-            let currentMainToolBar = globalState.get('currentToolbar') || getCurrentToolbar()
-            if (currentMainToolBar) {
-                currentMainToolBar = this.attach(`md-toolbar-${currentMainToolBar}`)
-            } else {
-                currentMainToolBar = []
-            }
-            return [
-                this.attach('md-toolbar-nav-drawer-button', {
-                    openChild: false
-                }),
-                h('a#logo.toolbar-title.left', {
-                    'data-auto-route': 'true',
-                    href: '/'
-                }, [
-                    h('img', {
-                        id: 'md-site-logo',
-                        src: window.HITORINO_SITE_LOGO || Discourse.SiteSettings.logo_url,
-                        alt: 'hitorino*'
-                    })
-                ]),
-                currentMainToolBar,
-                this.attach('md-toolbar-search-button')
-            ];
-        },
-        click(e) {
-            if (e.type === 'click' && e.button === 0 && e.target.id ===
-                'md-site-logo') {
-                e.preventDefault();
-                DiscourseURL.routeTo('/');
-                return false;
-            } else {
-                return true;
-            }
-        }
-    });
-}{
-    api.createWidget('md-toolbar-search-button', {
-        tagName: 'div#search-button.md-button.right',
-        buildClasses() {
-            if (globalState.get('showSearchbar')) {
-                return ['active'];
-            } else {
-                return [];
-            }
-        },
-        html() {
-            globalState.addObserver('showSearchbar', ()=>{
-                this.scheduleRerender();
-            });
-            if (!globalState.get('showSearchbar')) {
-                return mdIcon('magnify');
-            } else {
-                return mdIcon('close');
-            }
-        },
-
-        click: clickActionHandler,
-        clickAction(e) {
-            if (globalState.get('showSearchbar')) {
-                $('.md-toolbar form.md-search').fadeOut(250, ()=> {
-                    globalState.set('showSearchbar', false);
-                });
-            } else {
-                globalState.set('showSearchbar', true);
-            }
-            return false;
-        }
-    });
-}{
-    // toolbar -> md-toolbar-nav-drawer-button
-    api.createWidget('md-toolbar-nav-drawer-button', $.extend({}, {
-        tagName: 'a.nav-drawer-button.md-button.left.initial',
-        buildKey(attrs) {
-            return 'md-toolbar-nav-drawer-button';
-        },
-        
-        defaultState() {
-            return {
-                user: getUser()
-            };
-        },
-
-        makeIcon(name) {
-            return mdIcon(name, true);
-        },
-
-        html(attrs, state) {
-            var contents = [this.makeIcon('menu')];
-            const unreadNotifications = state.user.get('unread_notifications');
-            this.appEvents.on('notifications:changed', ()=>{
-                this.state.user = getUser();
-                this.scheduleRerender();
-            });
-            if (!!unreadNotifications) {
-                contents.push(this.attach('link', {
-                    action: 'click',
-                    className: 'badge-notification unread-notifications',
-                    rawLabel: unreadNotifications,
-                    omitSpan: true,
-                    title: "notifications.tooltip.regular",
-                    titleOptions: {
-                        count: unreadNotifications
-                    }
-                }));
-            }
-            return contents;
-        },
-
-        click: clickActionHandler,
-        clickAction(e) {
-            globalState.set('showNavDrawer', !globalState.get('showNavDrawer'));
-        },
-
-        onChildOpen() {
-            const centerLeft = $('#toolbar .center').css('left');
-            const w1 = $('html').width();
-            $('html').css('overflow-y','hidden');
-            const w2 = $('html').width();
-            $('html').css('margin-right', w2-w1);
-            $('#toolbar .right').css('right', 8+w2-w1);
-            $('#toolbar .center').css('left', centerLeft);
-            $('body').addClass('md-no-selection');
-        },
-        onChildClose() {
-            $('html').css('overflow-y','');
-            $('html').css('margin-right', '');
-            $('#toolbar .right').css('right', '');
-            $('#toolbar .center').css('left', '');
-            $('body').removeClass('md-no-selection');
-        }
-    }));
-}api.createWidget('md-nav-drawer-overlay', {
+api.createWidget('md-nav-drawer-overlay', {
     tagName: '#overlay.md-nav-drawer-overlay',
     buildClasses() {
-        globalState.addObserver('showNavDrawer', ()=>{
+        window.MDGlobalState.addObserver('navDrawerIsOpen', ()=>{
             this.scheduleRerender();
         });
-        return globalState.get('showNavDrawer')?['active']:['inactive'];
+        return window.MDGlobalState.get('navDrawerIsOpen')?['active']:['inactive'];
     },
     html() {
         return [];
     },
     click: clickActionHandler,
     clickAction(e) {
-        globalState.set('showNavDrawer', false);
+        window.MDGlobalState.set('navDrawerIsOpen', false);
     }
 });
-// mdmenu/mdnavbar here
-api.createWidget('md-nav-drawer', {
-    tagName: 'div.md-nav-drawer',
+api.reopenWidget('hamburger-category', {
     buildClasses() {
-        if (globalState.get('navDrawerIsPermanent')
-            && globalState.get('showNavDrawer')) {
-            return ['permanent']
-        } else if (!globalState.get('showNavDrawer')) {
-            return ['inactive']
+        return ['md-entry']
+    }
+});
+
+const hamburgerMenu = require('discourse/widgets/hamburger-menu').default.prototype;
+const listCategories = hamburgerMenu.listCategories;
+// mdmenu/mdnavbar here
+api.createWidget('md-nav-drawer', _.extend({}, {
+    buildClasses() {
+        if (MDNavDrawerIsPermanent()) {
+            return ['permanent','md-nav-drawer']
         } else {
-            return []
+            return ['md-nav-drawer']
+        }
+    },
+    listCategories: listCategories,
+    tagName: 'div.md-nav-drawer',
+    buildKey: ()=> 'md-nav-drawer',
+    buildAttributes() {
+        if (!window.MDGlobalState.get('navDrawerIsOpen')) {
+            return {
+                style: 'display: none;'
+            };
         }
     },
     userInfo() {
@@ -461,11 +183,11 @@ api.createWidget('md-nav-drawer', {
             api.h('br'),
             user.get('name')
         ]);
-        return api.h('div.md-user-info', {
-            style: {
-                'background-image': `url(${user.get('navbar_background')})`
-            }
-        }, [
+        return api.h('div.md-user-info', (
+            user.get('profile_background')
+                ? { style: {'background-image': `url(${user.get('profile_background')})` } }
+                : {}
+        ), [
             userAvatar,
             userNames,
             api.h('span.user-title', user.get('title'))
@@ -475,70 +197,48 @@ api.createWidget('md-nav-drawer', {
     account() {
         if (!Discourse.User.current()) {
             return api.h('div.account', [
-                api.h('span.subheader', '账户'),
-                mdEntry('/login', 'account', '登录账户')
+                api.h('span.subheader', I18n.t('user.preferences_nav.account')),
+                mdEntry('/login', 'sign-in', I18n.t('log_in'))
             ])
         }
-        const user = this.user;
-        let insider = undefined;
-        if (!!user.groups && user.groups.filter(function(g) {
-                return g.name === "hitorino-insider";
-            }).length == 0) {
-            insider = mdEntry('https://insider.hitorino.moe/', 'account-multiple-plus', 'insider 申请', 0, false);
-        }
-
+        const user = this.user;        
         let admin = undefined;
         if (!!user.admin) {
-            admin = mdEntry('/admin', 'key', '后台管理');
+            admin = mdEntry('/admin', 'key', I18n.t('admin_title'));
         }
         return api.h('div.account', [
-            api.h('span.subheader', '账户'),
+            api.h('span.subheader', I18n.t('user.preferences_nav.account')),
             admin,
             mdEntry(`/u/${user.get('username')}/preferences`,
-                'settings', '偏好设置'),
+                'settings', I18n.t('user.preferences')),
             api.h('a#logout.md-entry.initial', [
-                mdIcon('power'),
-                api.h('span', '登出账户')
-            ]),
-            insider
+                mdIcon('sign-out'),
+                api.h('span', I18n.t('user.log_out'))
+            ])
         ]);
     },
 
     misc() {
         const user = this.user;
         return api.h('div.misc', [
-            api.h('span.subheader', '更多'),
-            mdEntry('https://hitorino.moe/', 'home',
-                'hitorino × 猫娘领域 首页', 0, false),
-            mdEntry('https://m.hitorino.moe/', 'account-multiple',
-                'hitorino × Mastodon 实例', 0, false),
-            mdEntry('/faq', 'information', 'hitorino 社区介绍'),
-            mdEntry('/tos', 'book', 'hitorino 服务条款'),
+            api.h('span.subheader', I18n.t('more')),
+            mdEntry('/faq', 'question', I18n.t('faq')),
             this.attach('mdnavbar-switchview')
         ]);
     },
 
     html() {
-        globalState.addObserver('showNavDrawer', ()=>{
-            this.scheduleRerender();
-        });
-        globalState.addObserver('navDrawerIsPermanent', ()=>{
-            this.scheduleRerender();
-        });
-        this.user = getUser();
-        window.onMDNavDrawerToggled || window.onMDNavDrawerToggled(globalState.get('showNavDrawer'));
+        this.user = Discourse.User.current();
 
         if (!Discourse.User.current()) {
             return [
-                this.userInfo(),
                 this.account(),
                 this.misc()
             ];
         } else {
             return [
                 this.userInfo(),
-                this.attach('mdmenu-tabs'),
-                this.attach('mdnavbar-categories'),
+                this.listCategories(),
                 this.account(),
                 this.misc()
             ];
@@ -555,465 +255,10 @@ api.createWidget('md-nav-drawer', {
             return false;
         }
     }
-});
+}));
 
 
 // Widgets
-
-{
-    // Tabs
-    // # toolbar -> mdmenu/navbar
-    // Notifcation - PrivMsg - Bookmark
-
-    const BOOKMARK_TYPE = 3;
-    const PRIVATE_MESSAGE_TYPE = 6;
-
-    const GLOBAL_ENTRY_LIMIT = 3;
-    const NETWORK_ENTRY_LIMIT = GLOBAL_ENTRY_LIMIT + 1;
-    const TAB_NAMES = {
-        notifications: '通知',
-        privmsgs: '私信',
-        bookmarks: '书签'
-    };
-    const tab_header_tagNames = {
-        notifications: 'a#md-tab-header-notifications.subheader.tab-header',
-        privmsgs: 'a#md-tab-header-privmsgs.subheader.tab-header',
-        bookmarks: 'a#md-tab-header-bookmarks.subheader.tab-header'
-    };
-
-    function truncateToLimit(content, limit) {
-        if (content && (content.length > limit)) {
-            return content.slice(0, limit);
-        } else {
-            return content;
-        }
-    }
-
-    api.createWidget('mdmenu-tab-content', {
-        tagName: 'div.tab-content.initial',
-        buildClasses: (attrs) => `tab-content-${attrs.type} ${attrs.type}`,
-        buildKey: (attrs) => `tab-content-${attrs.type}`,
-        buildAttributes: (attrs) => attrs.hide ? {style: 'display: none;'} : {},
-
-        defaultState() {
-            return {
-                entries: [],
-                loading: false,
-                loaded: false
-            };
-        },
-        
-        notificationsChanged() {
-            this.refreshNotifications(this.state);
-        },
-
-        clearLoadingFlags() {
-            this.state.loading = false;
-            this.state.loaded = true;
-            this.scheduleRerender();
-        },
-
-        doFilter(iterable) {
-            if (iterable && this.attrs.type === 'privmsgs') {
-                return iterable.filter((x) => x.notification_type === PRIVATE_MESSAGE_TYPE);
-            } else {
-                return iterable;
-            }
-        },
-
-        loadBookmarks(state) {
-            const user = getUser();
-            const ajax = require('discourse/lib/ajax').ajax;
-            ajax(
-                `/user_actions.json?username=${user.get('username')}&filter=${BOOKMARK_TYPE}&offset=0`
-            ).then(result => {
-                state.entries = truncateToLimit(result.user_actions, NETWORK_ENTRY_LIMIT);
-            }).catch((err) => {
-                state.entries = [];
-            }).finally(() => {
-                this.clearLoadingFlags()
-            });
-            state.loading = true;
-        },
-
-        loadNotifications(state) {
-            const type = this.attrs.type;
-            const stale = this.store.findStale('notification', {
-                offset: 0
-            }, {
-                cacheKey: 'recent-${type}'
-            });
-
-            if (stale.hasResults) {
-                let content = this.doFilter(stale.results.get('content'));
-
-                // we have to truncate to limit, otherwise we will render too much
-                state.entries = truncateToLimit(content, NETWORK_ENTRY_LIMIT);
-            } else {
-                state.loading = true;
-            }
-
-            stale.refresh().then(notifications => {
-                if (type === 'notifications') {
-                    const unread = notifications.get('content').filter((x)=>!x.read).length;
-                    this.currentUser.set('unread_notifications', unread);
-                } else if (type === 'privmsgs') {
-                    const unread = this.doFilter(notifications.get('content')).filter((x)=>!x.read).length;
-                    this.currentUser.set('unread_private_messages', unread);
-                }
-                state.entries = truncateToLimit(this.doFilter(notifications.get('content')), NETWORK_ENTRY_LIMIT);
-            }).catch((err) => {
-                state.entries = [];
-            }).finally(() => {
-                this.clearLoadingFlags();
-            });
-        },
-
-        refreshNotifications(state) {
-            const type = this.attrs.type;
-
-            if (this.loading) {
-                return;
-            }
-
-            if (type === 'bookmarks') {
-                this.loadBookmarks(state);
-            } else {
-                this.loadNotifications(state);
-            }
-        },
-
-        html(attr, state) {
-            if (attr.hide) {
-                return [];
-            }
-            const type = attr.type;
-            const user = getUser();
-            if (!state.loaded) {
-                this.refreshNotifications(state);
-            }
-
-            const result = [];
-
-            if (state.loading) {
-                result.push(h('div.spinner-container', api.h('div.spinner')));
-            } else if (state.entries.length === 0 || state.entries.length) {
-                const notificationItems = truncateToLimit(state.entries, GLOBAL_ENTRY_LIMIT).map(n => {
-                    if (type === 'bookmarks') {
-                        return this.attach('mdmenu-bookmark-item', n);
-                    } else {
-                        return this.attach('mdmenu-notification-item', n);
-                    }
-                });
-                result.push(notificationItems);
-                
-                const linkTarget = {
-                    notifications: `/u/${user.get('username')}/notifications`,
-                    privmsgs: `/u/${user.get('username')}/messages`,
-                    bookmarks: `/u/${user.get('username')}/activity/bookmarks`
-                }
-                if (state.entries.length <= GLOBAL_ENTRY_LIMIT) {
-                    if (false) { //comment
-                        result.push(api.h(`a.md-entry.initial.no-more.${type}`, [
-                            mdIcon('check'),
-                            `没有更多${TAB_NAMES[type]}`
-                        ]));
-                    }
-                    result.push(mdEntry(linkTarget[type], 'check', `没有更多${TAB_NAMES[type]}`));
-                } else {
-                    result.push(mdEntry(linkTarget[type], 'dots-horizontal', `查看全部${TAB_NAMES[type]}`));
-                }
-            }
-
-            return result;
-        }
-    });
-
-    api.createWidget('mdmenu-tabs', {
-        tagName: 'div.tabs',
-        buildKey: () => 'mdmenu-tabs',
-        defaultState() {
-            return {
-                active: 'notifications',
-                'initial-notifications': true,
-                'initial-privmsgs': true,
-                'initial-bookmarks':true
-            };
-        },
-        html(attr, state) {
-            function getUnread(x) {
-                const user = getUser();
-                if (user.get(x)) {
-                    return `（${user.get(x)}）`;
-                } else {
-                    return '';
-                }
-            }
-
-            const tab_header_labels = {
-                notifications: `${TAB_NAMES['notifications']}${getUnread('unread_notifications')}`,
-                privmsgs: `${TAB_NAMES['privmsgs']}${getUnread('unread_private_messages')}`,
-                bookmarks: TAB_NAMES['bookmarks']
-            }
-            let tab_headers = api.h('div.md-tab-headers', [
-                'notifications', 'privmsgs', 'bookmarks'
-            ].map(function(x) {
-                const initial = state[`initial-${x}`]?'.initial':'';
-                const active = (state.active === x)?'.active':'';
-                return api.h(tab_header_tagNames[x] +
-                        active+initial, tab_header_labels[x]
-                );
-            }));
-            return [
-                tab_headers,
-                ['notifications', 'privmsgs', 'bookmarks'].map((type) => {
-                    return this.attach('mdmenu-tab-content', {
-                        type: type,
-                        hide: type!==state.active
-                    })
-                })
-            ]
-        },
-
-        click(e) {
-            if (e && e.target.id.startsWith('md-tab-header-')) {
-                this.state.active = e.target.id.replace('md-tab-header-', '');
-                this.state[`initial-${this.state.active}`] = false;
-                return false;
-            } else {
-                return true;
-            }
-        }
-    });
-}
-
-{
-    // toolbar -> mdmenu/navbar -> tabs -> bookmarks
-    api.createWidget('mdmenu-bookmark-item', {
-        tagName: 'a.md-entry.initial',
-        buildAttributes(attr) {
-            const url = `/t/topic/${attr.topic_id}/${attr.post_number}`
-            return {
-                href: url,
-                'data-auto-route': 'true'
-            }
-        },
-        html(attr) {
-            return [mdIcon('bookmark'), attr.title];
-        },
-        click: aClickHandler
-    });
-}
-
-{
-    // toolbar -> mdmenu/navbar -> tabs -> notifications|privmsgs
-    const LIKED_TYPE = 5;
-    const INVITED_TYPE = 8;
-    const GROUP_SUMMARY_TYPE = 16;
-
-    api.createWidget('mdmenu-notification-item', {
-        tagName: 'a.md-entry.initial',
-
-        buildClasses(attrs) {
-            const classNames = [];
-            if (attrs.get('read')) {
-                classNames.push('read');
-            }
-            if (attrs.is_warning) {
-                classNames.push('is-warning');
-            }
-            return classNames;
-        },
-        url() {
-            const attrs = this.attrs;
-            const data = attrs.data;
-            const badgeId = data.badge_id;
-            if (badgeId) {
-                let badgeSlug = data.badge_slug;
-
-                if (!badgeSlug) {
-                    const badgeName = data.badge_name;
-                    badgeSlug = badgeName.replace(/[^A-Za-z0-9_]+/g,
-                        '-').toLowerCase();
-                }
-
-                let username = data.username;
-                username = username ? "?username=" + username.toLowerCase() :
-                    "";
-                return Discourse.getURL('/badges/' + badgeId + '/' +
-                    badgeSlug + username);
-            }
-
-            const topicId = attrs.topic_id;
-
-            if (topicId) {
-                return postUrl(attrs.slug, topicId, attrs.post_number);
-            }
-
-            if (attrs.notification_type === INVITED_TYPE) {
-                return userPath(data.display_username);
-            }
-
-            if (data.group_id) {
-                return userPath(data.username + '/messages/group/' +
-                    data.group_name);
-            }
-        },
-
-        description() {
-            const data = this.attrs.data;
-            const badgeName = data.badge_name;
-            if (badgeName) {
-                return escapeExpression(badgeName);
-            }
-
-            if (this.attrs.fancy_title) {
-                return this.attrs.fancy_title;
-            }
-
-            const title = data.topic_title;
-            return Ember.isEmpty(title) ? "" : escapeExpression(title);
-        },
-
-        text(notificationType, notName) {
-            const {
-                attrs
-            } = this;
-            const data = attrs.data;
-            const scope = (notName === 'custom') ? data.message :
-                `notifications.${notName}`;
-
-            if (notificationType === GROUP_SUMMARY_TYPE) {
-                const count = data.inbox_count;
-                const group_name = data.group_name;
-                return I18n.t(scope, {
-                    count,
-                    group_name
-                });
-            }
-
-            const username = formatUsername(data.display_username);
-            const description = this.description();
-            if (notificationType === LIKED_TYPE && data.count > 1) {
-                const count = data.count - 2;
-                const username2 = formatUsername(data.username2);
-                if (count === 0) {
-                    return I18n.t('notifications.liked_2', {
-                        description,
-                        username,
-                        username2
-                    });
-                } else {
-                    return I18n.t('notifications.liked_many', {
-                        description,
-                        username,
-                        username2,
-                        count
-                    });
-                }
-            }
-            return I18n.t(scope, {
-                description,
-                username
-            });
-        },
-
-        info(attrs) {
-            const notificationType = attrs.notification_type;
-            const lookup = this.site.get('notificationLookup');
-            const notName = lookup[notificationType];
-            let {
-                data
-            } = attrs;
-            let infoKey = notName === 'custom' ? data.message : notName;
-            let text = emojiUnescape(this.text(notificationType,
-                notName));
-            let title = I18n.t(`notifications.alt.${infoKey}`);
-            return {
-                infoKey,
-                notName,
-                text,
-                title
-            }
-        },
-
-        buildAttributes(attrs) {
-            const info = this.info(attrs);
-            const href = this.url();
-            return href ? {
-                href: href,
-                title: info.title,
-                'data-auto-route': 'true'
-            } : {};
-        },
-        html(attrs) {
-            const info = this.info(attrs);
-            // TODO: find replacements for 'at' and 'hand-pointing-right'
-            const REPLACEMENTS = {
-                'mentioned': "at",
-                'group_mentioned': "at",
-                'quoted': "format-quote-close",
-                'replied': "reply",
-                'posted': "reply",
-                'edited': "pencil",
-                'liked': "heart",
-                'liked_2': "heart",
-                'liked_many': "heart",
-                'private_message': "email",
-                'invited_to_private_message': "email",
-                'invited_to_topic': "hand-pointing-right",
-                'invitee_accepted': "account",
-                'moved_post': "logout",
-                'linked': "link",
-                'granted_badge': "certificate",
-                'topic_reminder': "hand-pointing-right",
-                'watching_first_post': "radiobox-marked",
-                'group_message_summary': "account-multiple"
-            };
-            const r = function(dname) {
-                if (REPLACEMENTS[dname]) {
-                    return REPLACEMENTS[dname];
-                } else {
-                    return dname;
-                }
-            }
-            //const icon = api.h('i.material-icons.md-24.md-dark', {
-            //    title: info.title
-            //}, r(info.infoKey));
-            const icon = mdIcon(r(info.infoKey))
-            // We can use a `<p>` tag here once other languages have fixed their HTML
-            // translations.
-            let html = new RawHtml({
-                html: `<span>${info.text}</span>`
-            });
-
-            return [icon, html];
-        },
-        
-        click(e) {
-            const id = this.attrs.id;
-            const ajax = require('discourse/lib/ajax').ajax;
-            ajax('/notifications/mark-read', { method: 'PUT', data: { id: id } }).then(()=>{
-                this.sendWidgetAction('notificationsChanged');
-            });
-            this.attrs.set('read', true);
-            setTransientHeader("Discourse-Clear-Notifications", id);
-            if (document && document.cookie) {
-                document.cookie =
-                    `cn=${id}; expires=Fri, 31 Dec 9999 23:59:59 GMT`;
-            }
-            
-            
-            if (wantsNewWindow(e)) {
-                return;
-            }
-            e.preventDefault();
-            this.sendWidgetEvent('linkClicked');
-            DiscourseURL.routeTo(this.url());
-        }
-    });
-}
-
 
 {
     api.createWidget('mdnavbar-switchview', {
@@ -1025,13 +270,13 @@ api.createWidget('md-nav-drawer', {
                 sv = {
                     mode: 0,
                     icon: "laptop",
-                    title: "桌面设备页面"
+                    title: I18n.t('desktop_view')
                 };
             } else {
                 sv = {
                     mode: 1,
                     icon: "cellphone",
-                    title: "移动设备页面"
+                    title: I18n.t('mobile_view')
                 };
             }
             return [
@@ -1049,45 +294,48 @@ api.createWidget('md-nav-drawer', {
     });
 }
 
-api.createWidget('mdnavbar-categories', {
-    tagName: 'div#categories',
-    categories() {
-        const site = this.site;
-        let result = [];
-        // add category entries
-		for (var i = 0; i < site.categories.length - 1; i++) {
-		    result.push(api.h('a.md-entry.initial', {
-		        href: site.categories[i].get('url'),
-		        'data-auto-route': 'true'
-		    }, [
-		        api.h('div.list-icon', {
-                    style: {
-                        'background-color': `#${site.categories[i].get('color')}`
+api.createWidget('md-header-dropdown-hamburger', {
+    tagName: 'ul.icons.d-header-icons.d-header-left',
+    html(attrs, state) {
+        return this.attach('header-dropdown', {
+            title: 'hamburger_menu',
+            icon: 'bars',
+            iconId: 'toggle-nav-drawer',
+            active: false, // Keep active false in order to allow NavDrawer-closing.
+            action: 'toggleHamburgerActive',
+            contents() {
+                if (!attrs.flagCount) {
+                    return;
+                }
+                return api.h('div.badge-notification.flagged-posts', {
+                    attributes: {
+                        title: I18n.t('notifications.total_flagged')
                     }
-                }),
-		        api.h('span', site.categories[i].get('name'))
-            ]));
-		}
-		return result;
-    },
-    html() {
-        return [
-            api.h('span.subheader', '分区'),
-            this.categories()
-        ];
-    },
-    click: aClickHandler
-});
-api.reopenWidget('header', {
-    html() {
-        return [
-            this.attach('md-toolbar'),
-            this.attach('md-nav-drawer'),
-            this.attach('md-nav-drawer-overlay')
-        ];
+                }, attrs.flagCount);
+            }
+        })
     }
 });
-</script>
+
+api.decorateWidget('header-contents:before', dec => {
+    return [
+        dec.attach('md-header-dropdown-hamburger', dec.attrs)
+    ];
+})
+
+api.reopenWidget('header', {
+    toggleHamburgerActive() {
+        window.MDGlobalState.set('navDrawerIsOpen', !window.MDGlobalState.get('navDrawerIsOpen'));
+        this.scheduleRerender();
+    }
+});
+
+api.decorateWidget('header:before', dec => {
+    return (window.MDGlobalState.get('navDrawerIsOpen') ? [
+        dec.h('div.md-nav-drawer-wrapper', [dec.attach('md-nav-drawer')]),
+        dec.attach('md-nav-drawer-overlay')
+    ] : [])
+})</script>
 
 <script>
     if (typeof String.prototype.startsWith != 'function') {
@@ -1107,169 +355,17 @@ api.reopenWidget('header', {
 
 $(document).ready(function(){
     function updatePermanent() {
-        MDNavDrawerUpdatePermanent();
+        window.MDNavDrawerUpdatePermanent();
         if (MDNavDrawerIsPermanent()) {
-            $('header.d-header').parent().addClass('permanent-nav-drawer');
+            $('header.d-header').parent().parent().addClass('permanent-nav-drawer');
         } else {
-            $('header.d-header').parent().removeClass('permanent-nav-drawer');
+            $('header.d-header').parent().parent().removeClass('permanent-nav-drawer');
         }
     }
     $(window).resize(updatePermanent);
     updatePermanent();
+    if (window.MDGlobalState.get('navDrawerIsPermanent')) {
+        $('#toggle-nav-drawer').click();
+    }
 });
-</script>
-<script type="text/discourse-plugin" version="0.8.9">
-    const ajax = require('discourse/lib/ajax').ajax;
-    const popupAjaxError = require('discourse/lib/ajax-error').popupAjaxError;
-    const Topic = require('discourse/models/topic').default;
-    const TopicListItem = require('discourse/components/topic-list-item').default;
-    const computed = require('ember-addons/ember-computed-decorators').default;
-    const findRawTemplate = require('discourse/lib/raw-templates').findRawTemplate;
-    Topic.reopen({
-        toggleLiked() {
-            if (this.get('liking')) { return Ember.RSVP.Promise.resolve(); }
-            this.set('liking', true);
-            if (this.get('topic_post_liked') && this.get('topic_post_can_unlike')) {
-                return ajax(`/post_actions/${this.get('topic_post_id')}`, {
-                    type: 'DELETE',
-                    dataType: 'json',
-                    data: {
-                        'post_action_type_id': 2
-                    }
-                }).then((result) => {
-                    this.set('topic_post_liked', false);
-                    this.set('like_count', this.get('like_count') - 1);
-                }).catch(popupAjaxError).finally(() => {
-                    this.set('liking', false);
-                })
-            } 
-            if (!this.get('topic_post_liked') && this.get('topic_post_can_like')) {
-                return ajax('/post_actions', {
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        'id': this.get('topic_post_id'),
-                        'post_action_type_id': 2,
-                    }
-                }).then((result) => {
-                    this.set('topic_post_liked', true);
-                    this.set('like_count', this.get('like_count') + 1)
-                }).catch(popupAjaxError).finally(() => {
-                    this.set('liking', false)
-                });
-            }
-            return Ember.RSVP.Promise.resolve();
-        }
-    })
-    TopicListItem.reopen({
-        buildBuffer: function (buffer) {
-            var template = findRawTemplate('topic-list-item-override');
-            if (template) {
-                buffer.push(template(this));
-            }
-        },
-        unhandledRowClick: function (e) {
-            const target = e.target;
-            const topic = this.get('topic');
-            if ($.contains($('button.post-like', e.currentTarget).get(0), target)) {
-                let $btn = $('button.post-like', e.currentTarget);
-                if (!$btn.hasClass('active-animation')) {
-                    $btn.addClass('active-animation');
-                    setTimeout(function () {
-                        $btn.removeClass('active-animation');
-                    }, 500);
-                }
-                topic.toggleLiked().finally(() => this.rerenderBuffer());
-            }
-            if ($.contains($('button.post-bookmark', e.currentTarget).get(0), target)) {
-                let $btn = $('button.post-bookmark', e.currentTarget);
-                if (!$btn.hasClass('active-animation')) {
-                    $btn.addClass('active-animation');
-                    setTimeout(function () {
-                        $btn.removeClass('active-animation');
-                    }, 500);
-                }
-                topic.toggleBookmark().finally(() => this.rerenderBuffer());
-            }
-        }
-    });
-</script>
-<script type='text/x-handlebars' data-template-name='topic-list-item-override.raw'>
-    <div class="post-card">
-        <div class="post-card-head">
-            <a href="{{topic.posters.firstObject.user.path}}" data-user-card="{{topic.posters.firstObject.user.username}}">
-                {{avatar topic.posters.firstObject avatarTemplatePath="user.avatar_template" usernamePath="user.username" imageSize="small"}}
-            </a>
-            <span class="head-detail">
-                <div class="post-title">
-                    {{topic-link topic class="raw-link raw-topic-link"}}
-                    {{raw "list/activity-column" topic=topic class="post-activity" tagName="span"}}
-                </div>
-                <div class="post-tags">
-                    <a class="category-badge" href="{{topic.category.url}}">{{topic.category.name}}</a>
-                    {{discourse-tags topic mode="list" tagsForUser=tagsForUser}}
-                </div>
-            <span>
-        </div>
-        {{#if topic.hasExcerpt}}
-        <div class="post-body">{{topic.escapedExcerpt}}</div>
-        {{/if}}
-        <div class="post-footer">
-            <button class="post-views widget-button btn-flat">
-                <svg viewBox="0 0 24 24">
-                    <path fill="#999999" d="M21,5C19.89,4.65 18.67,4.5 17.5,4.5C15.55,4.5 13.45,4.9 12,6C10.55,4.9 8.45,4.5 6.5,4.5C4.55,4.5 2.45,4.9 1,6V20.65C1,20.9 1.25,21.15 1.5,21.15C1.6,21.15 1.65,21.1 1.75,21.1C3.1,20.45 5.05,20 6.5,20C8.45,20 10.55,20.4 12,21.5C13.35,20.65 15.8,20 17.5,20C19.15,20 20.85,20.3 22.25,21.05C22.35,21.1 22.4,21.1 22.5,21.1C22.75,21.1 23,20.85 23,20.6V6C22.4,5.55 21.75,5.25 21,5M21,18.5C19.9,18.15 18.7,18 17.5,18C15.8,18 13.35,18.65 12,19.5V8C13.35,7.15 15.8,6.5 17.5,6.5C18.7,6.5 19.9,6.65 21,7V18.5Z" />
-                </svg>
-                {{number topic.views numberKey="views_long"}}
-            </button>
-            <button class="post-participants widget-button btn-flat">
-                <svg viewBox="0 0 24 24">
-                    <path fill="#999999" d="M12,23A1,1 0 0,1 11,22V19H7A2,2 0 0,1 5,17V7A2,2 0 0,1 7,5H21A2,2 0 0,1 23,7V17A2,2 0 0,1 21,19H16.9L13.2,22.71C13,22.89 12.76,23 12.5,23H12M3,15H1V3A2,2 0 0,1 3,1H19V3H3V15Z" />
-                </svg>
-                {{number topic.replyCount noTitle="true"}}
-            </button>
-            <button class="post-like widget-button btn-flat">
-                {{#if topic.topic_post_liked}}
-                <svg viewBox="0 0 24 24">
-                    <path fill="#ff8888" d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
-                </svg>
-                {{else}}
-                <svg viewBox="0 0 24 24">
-                    <path fill="#999999" d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
-                </svg>
-                {{/if}}
-                {{number topic.like_count}}
-            </button>
-            <button class="post-bookmark widget-button btn-flat">
-                {{#if topic.bookmarked}}
-                <svg viewBox="0 0 24 24">
-                    <path fill="#ff8888" d="M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z" />
-                </svg>
-                {{else}}
-                <svg viewBox="0 0 24 24">
-                    <path fill="#999999" d="M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z" />
-                </svg>
-                {{/if}}
-            </button>
-            <a class="last-poster" href="{{topic.posters.lastObject.user.path}}" data-user-card="{{topic.posters.lastObject.user.username}}">
-                最后回复{{avatar topic.posters.lastObject avatarTemplatePath="user.avatar_template" usernamePath="user.username" imageSize="small"}}
-            </a>
-        </div>
-    </div>
-</script>
-<script type="text/x-handlebars" data-template-name="components/topic-list">
-    {{#each filteredTopics as |topic|}}
-        {{topic-list-item topic=topic
-                          bulkSelectEnabled=bulkSelectEnabled
-                          showTopicPostBadges=showTopicPostBadges
-                          hideCategory=hideCategory
-                          showPosters=showPosters
-                          showParticipants=showParticipants
-                          showLikes=showLikes
-                          showOpLikes=showOpLikes
-                          expandGloballyPinned=expandGloballyPinned
-                          expandAllPinned=expandAllPinned
-                          lastVisitedTopic=lastVisitedTopic
-                          selected=selected
-                          tagsForUser=tagsForUser}}
-    {{/each}}
 </script>

@@ -1,16 +1,16 @@
 api.createWidget('md-nav-drawer-overlay', {
     tagName: '#overlay.md-nav-drawer-overlay',
     buildClasses() {
-        globalState.addObserver('showNavDrawer', ()=>{
+        window.MDGlobalState.addObserver('navDrawerIsOpen', ()=>{
             this.scheduleRerender();
         });
-        return globalState.get('showNavDrawer')?['active']:['inactive'];
+        return window.MDGlobalState.get('navDrawerIsOpen')?['active']:['inactive'];
     },
     html() {
         return [];
     },
     click: clickActionHandler,
     clickAction(e) {
-        globalState.set('showNavDrawer', false);
+        window.MDGlobalState.set('navDrawerIsOpen', false);
     }
 });
