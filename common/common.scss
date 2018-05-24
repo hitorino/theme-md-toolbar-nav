@@ -367,6 +367,7 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
 
 .md-nav-drawer .badge-wrapper .badge-category {
   display: inline;
+  margin-left: 16px;
 }
 
 .md-nav-drawer .md-entry>div {
@@ -377,11 +378,14 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
   margin: 10px 2px;
 }
 
+.md-nav-drawer .md-entry>span {
+  margin-left: 16px;
+}
+
 .md-nav-drawer .md-entry>span,
 .md-nav-drawer .badge-wrapper .category-name {
   font-size: 14px;
   color: #666;
-  margin-left: 16px;
 }
 
 .md-nav-drawer .md-entry>span p {
