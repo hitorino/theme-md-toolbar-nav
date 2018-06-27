@@ -60,7 +60,7 @@ api.createWidget('md-nav-drawer', _.extend({}, {
         }
     },
     listCategories: listCategories,
-    tagName: 'div.md-nav-drawer',
+    tagName: 'div.md-nav-drawer.md-no-selection',
     buildKey: ()=> 'md-nav-drawer',
     buildAttributes() {
         if (!window.MDGlobalState.get('navDrawerIsOpen')) {
