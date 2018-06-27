@@ -396,9 +396,23 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
 
 .md-nav-drawer .category-link .badge-wrapper i.d-icon,
 .md-nav-drawer .category-link .badge-notification {
-  float: right;
-  font-size: 24px;
+  font-size: 14px;
   color: #666;
+  
+  &.d-icon {
+      right: 2px;
+      margin-top: 13px;
+      float: right;
+      &:after {
+          clear: both;
+      }
+  }
+  
+  &.badge-notification {
+      position: absolute;
+      right: 40px;
+      margin: 9px;
+  }
 }
 
 .md-nav-drawer .md-entry>div {
