@@ -389,9 +389,16 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
   border-radius: 50%;
 }
 
-.md-nav-drawer .badge-wrapper .badge-category {
+.md-nav-drawer .category-link .badge-wrapper .badge-category {
   display: inline;
   margin-left: 16px;
+}
+
+.md-nav-drawer .category-link .badge-wrapper i.d-icon,
+.md-nav-drawer .category-link .badge-notification {
+  float: right;
+  font-size: 24px;
+  color: #666;
 }
 
 .md-nav-drawer .md-entry>div {
