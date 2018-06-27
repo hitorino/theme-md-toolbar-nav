@@ -380,11 +380,12 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
 .md-nav-drawer .md-entry>i,
 .md-nav-drawer .badge-wrapper > .badge-category-bg {
   float: left;
+  left: 16px;
   margin: 8px 0;
   display: block;
   width: 24px;
   height: 24px;
-  position: static;
+  position: static !important;
   border-radius: 50%;
 }
 
