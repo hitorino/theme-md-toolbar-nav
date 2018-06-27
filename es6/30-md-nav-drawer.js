@@ -99,9 +99,19 @@ api.createWidget('md-nav-drawer', _.extend({}, {
 
     misc() {
         const user = this.user;
+        const links = settings.sidebar_extra_links.split('|').map((link)=>{
+            const info = link.split(',');
+            return {
+                name: info[0],
+                url: info[1],
+                icon: info[2]
+            }
+        }).map((linkInfo)=>{
+            return mdEntry(linkInfo.url, linkInfo.icon, linkInfo.name);
+        });
         return api.h('div.misc', [
             api.h('span.subheader', I18n.t('more')),
-            mdEntry('/faq', 'question', I18n.t('faq')),
+            ...links,
             this.attach('mdnavbar-switchview')
         ]);
     },
