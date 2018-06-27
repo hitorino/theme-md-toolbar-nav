@@ -52,6 +52,12 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
   color: rgba(255, 255, 255, 0.3);
 }
 
+/* Fix special icons such as d-icon-home. */
+.d-header .md-nav-drawer .misc .d-icon {
+  padding: 0;
+}
+
+/* disable selection in navdrawer */
 .md-no-selection {
   -moz-user-select: none;
   -webkit-user-select: none;
