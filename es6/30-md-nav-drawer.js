@@ -25,7 +25,7 @@ api.createWidget('md-nav-drawer-userinfo', {
         return [
             this.userAvatar(),
             this.userNames(),
-            api.h('span.user-title', this.user.get('title'))
+            api.h('span.md-user-title', this.user.get('title'))
         ];
     },
 
@@ -37,13 +37,13 @@ api.createWidget('md-nav-drawer-userinfo', {
     },
 
     userAvatar() {
-        return api.h('a.user-avatar', this.linkToUser(), [
+        return api.h('a.md-user-avatar', this.linkToUser(), [
             api.h('img', { src: this.userAvatarUrl() })
         ]);
     },
 
     userNames() {
-        return api.h('a.user-names', this.linkToUser(), [
+        return api.h('a.md-user-names', this.linkToUser(), [
             this.user.get('username'),
             api.h('br'),
             this.user.get('name')
