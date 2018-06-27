@@ -19,3 +19,5 @@ const replaceIcon = require('discourse-common/lib/icon-library').replaceIcon;
 const loadTopicView = require('discourse/models/topic').loadTopicView;
 const renderTag = require('discourse/lib/render-tag').default;
 const renderTags = require('discourse/lib/render-tags').default;
+
+const registerUnbound = require('discourse-common/lib/helpers').registerUnbound;

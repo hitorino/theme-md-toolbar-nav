@@ -6,6 +6,50 @@ api.reopenWidget('hamburger-category', {
 
 const hamburgerMenu = require('discourse/widgets/hamburger-menu').default.prototype;
 const listCategories = hamburgerMenu.listCategories;
+
+api.createWidget('md-nav-drawer-userinfo', {
+    tagName: 'div.md-user-info',
+    buildAttributes() {
+        this.user = getUser();
+        return {
+            style: `background-image: url(${this.user.get('navbar_background')});`
+        };
+    },
+
+    userAvatarUrl() {
+        return this.user.get('avatar_template').replace("{size}", "64");
+    },
+
+    html() {
+        this.user = getUser();
+        return [
+            this.userAvatar(),
+            this.userNames(),
+            api.h('span.user-title', this.user.get('title'))
+        ];
+    },
+
+    linkToUser() {
+        return {
+            href: `/u/${this.user.get('username')}`,
+            "data-auto-route": true
+        };
+    },
+
+    userAvatar() {
+        return api.h('a.user-avatar', this.linkToUser(), [
+            api.h('img', { src: this.userAvatarUrl() })
+        ]);
+    },
+
+    userNames() {
+        return api.h('a.user-names', this.linkToUser(), [
+            this.user.get('username'),
+            api.h('br'),
+            this.user.get('name')
+        ])
+    }
+});
 // mdmenu/mdnavbar here
 api.createWidget('md-nav-drawer', _.extend({}, {
     buildClasses() {
@@ -26,33 +70,7 @@ api.createWidget('md-nav-drawer', _.extend({}, {
         }
     },
     userInfo() {
-        const user = this.user;
-        const userAvatar = api.h('a.user-avatar', {
-            href: `/u/${user.get('username')}`,
-            'data-auto-route': 'true'
-        }, [
-            api.h('img', {
-                src: user.get('avatar_template').replace(
-                    "{size}", "96")
-            })
-        ]);
-        const userNames = api.h('a.user-names', {
-            href: `/u/${user.get('username')}`,
-            'data-auto-route': 'true'
-        }, [
-            user.get('username'),
-            api.h('br'),
-            user.get('name')
-        ]);
-        return api.h('div.md-user-info', (
-            user.get('profile_background')
-                ? { style: {'background-image': `url(${user.get('profile_background')})` } }
-                : {}
-        ), [
-            userAvatar,
-            userNames,
-            api.h('span.user-title', user.get('title'))
-        ])
+        return this.attach("md-nav-drawer-userinfo");
     },
 
     account() {
@@ -91,19 +109,12 @@ api.createWidget('md-nav-drawer', _.extend({}, {
     html() {
         this.user = Discourse.User.current();
 
-        if (!Discourse.User.current()) {
-            return [
-                this.account(),
-                this.misc()
-            ];
-        } else {
-            return [
-                this.userInfo(),
-                this.listCategories(),
-                this.account(),
-                this.misc()
-            ];
-        }
+        return [
+            this.userInfo(),
+            this.listCategories(),
+            this.account(),
+            this.misc()
+        ];
     },
     click(e) {
         if (!aClickHandler(e)) {

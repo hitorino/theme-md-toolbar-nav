@@ -1,4 +1,6 @@
+
 <script type="text/discourse-plugin" version="0.8.9">
+
 const avatarImg = require('discourse/widgets/post').avatarImg;
 const DiscourseURL = require('discourse/lib/url').default;
 const userPath = require('discourse/lib/url').userPath;
@@ -20,6 +22,10 @@ const replaceIcon = require('discourse-common/lib/icon-library').replaceIcon;
 const loadTopicView = require('discourse/models/topic').loadTopicView;
 const renderTag = require('discourse/lib/render-tag').default;
 const renderTags = require('discourse/lib/render-tags').default;
+
+const registerUnbound = require('discourse-common/lib/helpers').registerUnbound;
+
+
 function extendWidget(superName, subName, opts) {
     return api.createWidget(subName, _.extends({}, opts, api.reopenWidget(superName, {})));
 }
@@ -52,6 +58,8 @@ function clickActionHandler(e) {
 if (Discourse.User.current()) {
     Discourse.User.current().findDetails();
 }
+
+
 {
     window.MDGlobalState = Ember.Object.extend({
         navDrawerIsPermanent: false,
@@ -66,15 +74,16 @@ if (Discourse.User.current()) {
     };
 
     window.MDNavDrawerUpdatePermanent();
-};function getUser() {
+};
+
+function getUser() {
     var user = Discourse.User.current();
-    const navbar_background_default = "https://forum.hitorino.moe/uploads/default/original/1X/6e3efd0a3b368ef708e1b70c550359f01f701f50.png";
     if (!user) {
         user = {
             get(key) {
                 switch (key) {
                     case 'navbar_background':
-                        return navbar_background_default;
+                        return settings.sidebar_userinfo_background_default;
                     case 'username':
                         return 'hitorino';
                     case 'name':
@@ -93,10 +102,12 @@ if (Discourse.User.current()) {
         user.set('navbar_background',
             (user.get('profile_background')
                 ? user.get('profile_background')
-                : navbar_background_default));
+                : settings.sidebar_userinfo_background_default));
     }
     return user;
-}replaceIcon('settings', 'cog');
+}
+
+replaceIcon('settings', 'cog');
 replaceIcon('cellphone', 'mobile');
 
 function mdIcon (icon, isLight = false) {
@@ -121,22 +132,8 @@ function mdEntry (link, icon, text, count = 0, isExternalLink = false) {
         countSpan
     ]);
 };
-api.createWidget('md-nav-drawer-overlay', {
-    tagName: '#overlay.md-nav-drawer-overlay',
-    buildClasses() {
-        window.MDGlobalState.addObserver('navDrawerIsOpen', ()=>{
-            this.scheduleRerender();
-        });
-        return window.MDGlobalState.get('navDrawerIsOpen')?['active']:['inactive'];
-    },
-    html() {
-        return [];
-    },
-    click: clickActionHandler,
-    clickAction(e) {
-        window.MDGlobalState.set('navDrawerIsOpen', false);
-    }
-});
+
+
 api.reopenWidget('hamburger-category', {
     buildClasses() {
         return ['md-entry']
@@ -145,6 +142,50 @@ api.reopenWidget('hamburger-category', {
 
 const hamburgerMenu = require('discourse/widgets/hamburger-menu').default.prototype;
 const listCategories = hamburgerMenu.listCategories;
+
+api.createWidget('md-nav-drawer-userinfo', {
+    tagName: 'div.md-user-info',
+    buildAttributes() {
+        this.user = getUser();
+        return {
+            style: `background-image: url(${this.user.get('navbar_background')});`
+        };
+    },
+
+    userAvatarUrl() {
+        return this.user.get('avatar_template').replace("{size}", "64");
+    },
+
+    html() {
+        this.user = getUser();
+        return [
+            this.userAvatar(),
+            this.userNames(),
+            api.h('span.user-title', this.user.get('title'))
+        ];
+    },
+
+    linkToUser() {
+        return {
+            href: `/u/${this.user.get('username')}`,
+            "data-auto-route": true
+        };
+    },
+
+    userAvatar() {
+        return api.h('a.user-avatar', this.linkToUser(), [
+            api.h('img', { src: this.userAvatarUrl() })
+        ]);
+    },
+
+    userNames() {
+        return api.h('a.user-names', this.linkToUser(), [
+            this.user.get('username'),
+            api.h('br'),
+            this.user.get('name')
+        ])
+    }
+});
 // mdmenu/mdnavbar here
 api.createWidget('md-nav-drawer', _.extend({}, {
     buildClasses() {
@@ -165,33 +206,7 @@ api.createWidget('md-nav-drawer', _.extend({}, {
         }
     },
     userInfo() {
-        const user = this.user;
-        const userAvatar = api.h('a.user-avatar', {
-            href: `/u/${user.get('username')}`,
-            'data-auto-route': 'true'
-        }, [
-            api.h('img', {
-                src: user.get('avatar_template').replace(
-                    "{size}", "96")
-            })
-        ]);
-        const userNames = api.h('a.user-names', {
-            href: `/u/${user.get('username')}`,
-            'data-auto-route': 'true'
-        }, [
-            user.get('username'),
-            api.h('br'),
-            user.get('name')
-        ]);
-        return api.h('div.md-user-info', (
-            user.get('profile_background')
-                ? { style: {'background-image': `url(${user.get('profile_background')})` } }
-                : {}
-        ), [
-            userAvatar,
-            userNames,
-            api.h('span.user-title', user.get('title'))
-        ])
+        return this.attach("md-nav-drawer-userinfo");
     },
 
     account() {
@@ -258,6 +273,26 @@ api.createWidget('md-nav-drawer', _.extend({}, {
 }));
 
 
+api.createWidget('md-nav-drawer-overlay', {
+    tagName: '#overlay.md-nav-drawer-overlay',
+    buildClasses() {
+        window.MDGlobalState.addObserver('navDrawerIsOpen', ()=>{
+            this.scheduleRerender();
+        });
+        return window.MDGlobalState.get('navDrawerIsOpen')?['active']:['inactive'];
+    },
+    html() {
+        return [];
+    },
+    click: clickActionHandler,
+    clickAction(e) {
+        window.MDGlobalState.set('navDrawerIsOpen', false);
+    }
+});
+
+
+
+
 // Widgets
 
 {
@@ -293,6 +328,8 @@ api.createWidget('md-nav-drawer', _.extend({}, {
         }
     });
 }
+
+
 
 api.createWidget('md-header-dropdown-hamburger', {
     tagName: 'ul.icons.d-header-icons.d-header-left',
@@ -335,7 +372,9 @@ api.decorateWidget('header:before', dec => {
         dec.h('div.md-nav-drawer-wrapper', [dec.attach('md-nav-drawer')]),
         dec.attach('md-nav-drawer-overlay')
     ] : [])
-})</script>
+})
+
+</script>
 
 <script>
     if (typeof String.prototype.startsWith != 'function') {
@@ -369,3 +408,6 @@ $(document).ready(function(){
     }
 });
 </script>
+
+
+

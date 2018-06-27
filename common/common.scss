@@ -27,25 +27,9 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
 }
 
 /* Rules for sizing the icon. */
-
-.material-icons.md-18 {
-  font-size: 18px;
-  width: 18px;
-}
-
 .material-icons.md-24 {
   font-size: 24px;
   width: 24px;
-}
-
-.material-icons.md-36 {
-  font-size: 36px;
-  width: 36px;
-}
-
-.material-icons.md-48 {
-  font-size: 48px;
-  width: 48px;
 }
 
 /* Rules for using icons as black on a light background. */
@@ -75,8 +59,39 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
   user-select: none;
 }
 
-.d-header #toggle-hamburger-menu {
-  display: none;
+/* header: topbar*/
+.d-header {
+  padding: 0;
+  height: 56px;
+}
+
+.d-header .d-header-icons {
+  a.icon {
+    padding: 0;
+    border: 0;
+    color: $header_primary;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    &:hover {
+      background-color: orange;
+    }
+  }
+
+  .drop-down-mode & {
+    .active a.icon {
+      background-color: transparent !important;
+      border: none !important;
+      color: $header_primary !important;
+      &:after {
+        display: none;
+      }
+    }
+  }
+
+  &:after {
+    display: none !important;
+  }
 }
 
 .d-header .d-header-left>li {
@@ -108,7 +123,8 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
   left: 0;
   width: calc(100% - 16px);
   margin: 0;
-  padding: 8px;
+  padding: 4px;
+  padding-left: 8px;
   z-index: 1000;
 }
 
@@ -245,10 +261,11 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
 .md-nav-drawer>.md-user-info>.user-names,
 .md-nav-drawer>.md-user-info>.user-title {
   display: block;
-  color: $primary;
+  color: #eee;
   overflow: hidden;
   text-overflow: ellipsis;
   box-sizing: border-box;
+  text-shadow: 0 0 8px #666;
 }
 
 .md-nav-drawer>.md-user-info>.user-names {
@@ -364,6 +381,7 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
   width: 24px;
   height: 24px;
   position: static;
+  border-radius: 50%;
 }
 
 .md-nav-drawer .badge-wrapper .badge-category {
