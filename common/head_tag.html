@@ -161,7 +161,7 @@ api.createWidget('md-nav-drawer-userinfo', {
         return [
             this.userAvatar(),
             this.userNames(),
-            api.h('span.user-title', this.user.get('title'))
+            api.h('span.md-user-title', this.user.get('title'))
         ];
     },
 
@@ -173,13 +173,13 @@ api.createWidget('md-nav-drawer-userinfo', {
     },
 
     userAvatar() {
-        return api.h('a.user-avatar', this.linkToUser(), [
+        return api.h('a.md-user-avatar', this.linkToUser(), [
             api.h('img', { src: this.userAvatarUrl() })
         ]);
     },
 
     userNames() {
-        return api.h('a.user-names', this.linkToUser(), [
+        return api.h('a.md-user-names', this.linkToUser(), [
             this.user.get('username'),
             api.h('br'),
             this.user.get('name')
@@ -196,7 +196,7 @@ api.createWidget('md-nav-drawer', _.extend({}, {
         }
     },
     listCategories: listCategories,
-    tagName: 'div.md-nav-drawer',
+    tagName: 'div.md-nav-drawer.md-no-selection',
     buildKey: ()=> 'md-nav-drawer',
     buildAttributes() {
         if (!window.MDGlobalState.get('navDrawerIsOpen')) {
@@ -245,19 +245,12 @@ api.createWidget('md-nav-drawer', _.extend({}, {
     html() {
         this.user = Discourse.User.current();
 
-        if (!Discourse.User.current()) {
-            return [
-                this.account(),
-                this.misc()
-            ];
-        } else {
-            return [
-                this.userInfo(),
-                this.listCategories(),
-                this.account(),
-                this.misc()
-            ];
-        }
+        return [
+            this.userInfo(),
+            this.listCategories(),
+            this.account(),
+            this.misc()
+        ];
     },
     click(e) {
         if (!aClickHandler(e)) {
