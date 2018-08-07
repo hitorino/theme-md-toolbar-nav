@@ -50,9 +50,9 @@ api.createWidget('md-nav-drawer', {
         }
         const user = this.user;
         let insider = undefined;
-        if (!!user.groups && user.groups.filter(function(g) {
-                return g.name === "hitorino-insider";
-            }).length == 0) {
+        if (!!user.groups && user.groups.every(function(g) {
+                return g.name !== "hitorino-insider";
+            })) {
             insider = mdEntry('https://insider.hitorino.moe/', 'account-multiple-plus', 'insider 申请', 0, false);
         }
 
