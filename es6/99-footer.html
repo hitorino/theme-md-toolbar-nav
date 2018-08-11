@@ -18,14 +18,17 @@
 
 $(document).ready(function(){
     function updatePermanent() {
-        MDNavDrawerUpdatePermanent();
+        window.MDNavDrawerUpdatePermanent();
         if (MDNavDrawerIsPermanent()) {
-            $('header.d-header').parent().addClass('permanent-nav-drawer');
+            $('header.d-header').parent().parent().addClass('permanent-nav-drawer');
         } else {
-            $('header.d-header').parent().removeClass('permanent-nav-drawer');
+            $('header.d-header').parent().parent().removeClass('permanent-nav-drawer');
         }
     }
     $(window).resize(updatePermanent);
     updatePermanent();
+    if (window.MDGlobalState.get('navDrawerIsPermanent')) {
+        $('#toggle-nav-drawer').click();
+    }
 });
 </script>

@@ -1,8 +1,9 @@
 #!/bin/bash
-for if in scss/common scss/desktop scss/mobile
+rm common/head_tag.html
+touch common/head_tag.html
+for i in $(find es6 templates -type f)
 do
-    i="$(basename "$if")"
-    sassc scss/"${i}"/"${i}".scss "${i}"/"${i}".scss
+  echo >> common/head_tag.html
+  cat $i >> common/head_tag.html
+  echo >> common/head_tag.html
 done
-cat es6/* > common/head_tag.html
-cat topic/* >> common/head_tag.html
