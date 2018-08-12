@@ -1,29 +1,15 @@
-const GlobalState = Ember.Object.extend({
-    currentPath: document.location.pathname,
-    currentToolbar: null,
-    showSearchbar: false,
-    showNavDrawer: false,
-    navDrawerIsPermanent: false
-});
+{
+    window.MDGlobalState = Ember.Object.extend({
+        navDrawerIsPermanent: false,
+        navDrawerIsOpen: false
+    }).create();
+    window.MDNavDrawerUpdatePermanent = function() {
+        window.MDGlobalState.set('navDrawerIsPermanent', $(window).width()>1126+270);
+    };
 
-const globalState = GlobalState.create();
+    window.MDNavDrawerIsPermanent = function() {
+        return window.MDGlobalState.get('navDrawerIsPermanent');
+    };
 
-
-api.onPageChange((url, title)=> {
-    globalState.set('currentPath', url)
-    const appEvents = api.container.lookup('app-events:main');
-    appEvents.trigger('msktheme:page-change')
-});
-
-window.MDNavDrawerUpdatePermanent = function() {
-    globalState.set('navDrawerIsPermanent', ($(window).width()>1110+300));
-}
-
-window.MDNavDrawerIsPermanent = function() {
-    return globalState.get('navDrawerIsPermanent');
-}
-
-window.MDNavDrawerUpdatePermanent();
-if (globalState.get('navDrawerIsPermanent')) {
-    globalState.set('showNavDrawer', true);
-}
+    window.MDNavDrawerUpdatePermanent();
+};

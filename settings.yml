@@ -1,0 +1,10 @@
+sidebar_userinfo_background_default:
+  type: string
+  default: 'https://forum.hitorino.moe/uploads/default/original/1X/6e3efd0a3b368ef708e1b70c550359f01f701f50.png'
+  description:
+    en: 'Default background of the userInfo field in the sidebar.'
+sidebar_extra_links:
+  type: list
+  default: 'FAQ,/faq,question|Guidelines,/tos,balance-scale|Privacy,/privacy,user-secret'
+  description:
+    en: 'Additional links. Format: <name>,<url>[,<icon>]'

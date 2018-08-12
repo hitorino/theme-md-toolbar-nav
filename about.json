@@ -1,14 +1,14 @@
 {
-  "name": "Material Design",
-  "about_url": "https://github.com/hitorino/discourse-theme-material-design",
-  "assets": {
+  "name" : "Material Design Sidebar",
+  "about_url" : "https://github.com/misaka4e21/material-design-sidebar-theme",
+  "assets" : {
   },
-  "color_schemes": {
-    "Material Design Pink": {
-      "header_background": "ff8888",
-      "tertiary": "5d5e62",
-      "quaternary": "4cade2",
-      "header_primary": "ffffff"
+  "color_schemes" : {
+    "hitorino Pink" : {
+      "tertiary" : "5d5e62",
+      "quaternary" : "4cade2",
+      "header_background" : "ff8888",
+      "header_primary" : "ffffff"
     }
   }
 }

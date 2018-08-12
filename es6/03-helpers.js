@@ -2,7 +2,6 @@ function extendWidget(superName, subName, opts) {
     return api.createWidget(subName, _.extends({}, opts, api.reopenWidget(superName, {})));
 }
 
-
 function aClickHandler(e) {
     if (!e) {
         return true;
@@ -31,6 +30,3 @@ function clickActionHandler(e) {
 if (Discourse.User.current()) {
     Discourse.User.current().findDetails();
 }
-
-
-window.onMDNavDrawerToggled = function(isOpen) {};
