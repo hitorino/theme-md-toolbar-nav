@@ -25,7 +25,9 @@ $(document).ready(function(){
             $('header.d-header').parent().parent().removeClass('permanent-nav-drawer');
         }
     }
-    $(window).resize(updatePermanent);
-    updatePermanent();
+
+    // Temporarily disable permanent navdrawer that blocks post editor.
+    //$(window).resize(updatePermanent);
+    //updatePermanent();
 });
 </script>
