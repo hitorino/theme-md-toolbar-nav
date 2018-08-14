@@ -42,3 +42,49 @@ api.decorateWidget('header:before', dec => {
         dec.attach('md-nav-drawer-overlay')
     ] : [])
 })
+
+api.createWidget('md-topbar-menu', {
+    tagName: 'a.md-topbar-link',
+    buildKey: ()=>'md-topbar-menu',
+    defaultState() {
+        return {
+            isOpen: false
+        }
+    },
+    html() {
+        const handler = '关于社区'
+        if (this.state.isOpen) {
+            const links = settings.sidebar_extra_links.split('|').map((link)=>{
+                const info = link.split(',');
+                return {
+                    name: info[0],
+                    url: info[1],
+                    icon: info[2]
+                }
+            }).map((linkInfo)=>api.h('a.md-topbar-link', {'data-auto-route':"true",href: linkInfo.url}, linkInfo.name))
+            return [
+                handler,
+                api.h('div.md-topbar-menu', links)
+            ]
+        } else {
+            return handler
+        }
+    },
+
+    click() {
+        this.state.isOpen = !this.state.isOpen;
+    },
+
+    clickOutside(e) {
+        this.state.isOpen = false;
+        this.scheduleRerender();
+    }
+});
+
+api.decorateWidget('home-logo:after', dec => {
+    return [
+        dec.h('a.md-topbar-link', {href: 'https://hitorino.moe'}, '首页'),
+        dec.h('a.md-topbar-link', {href: 'https://m.hitorino.moe'}, '微博客'),
+        dec.attach('md-topbar-menu')
+    ]
+})

@@ -480,3 +480,28 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
     opacity: 0;
   }
 }
+
+.md-topbar-link {
+  padding: 4px 16px;
+}
+
+.d-header .title .md-topbar-menu {
+  float: right;
+  background-color: $secondary;
+  border-radius: 4px;
+  box-shadow: $MDELEV16;
+  overflow: hidden;
+
+  .md-topbar-link {
+    display: block;
+    color: $tertiary;
+
+    &:hover {
+      background-color: $highlight;
+    }
+  }
+
+  &:after {
+    clear: right;
+  }
+}
