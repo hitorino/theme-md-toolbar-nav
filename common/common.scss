@@ -505,3 +505,10 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
     clear: right;
   }
 }
+
+@media only screen and (max-width: 552px) {
+  .d-header .title .md-topbar-link,
+  .d-header .title .md-topbar-menu {
+    display: none;
+  }
+}
