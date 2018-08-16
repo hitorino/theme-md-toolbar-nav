@@ -396,7 +396,8 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
 }
 
 .md-nav-drawer .md-entry>i,
-.md-nav-drawer .badge-wrapper > .badge-category-bg {
+.md-nav-drawer .badge-wrapper.box > .badge-category-bg, .badge-category-parent-bg
+{
   float: left;
   left: 16px;
   margin: 8px 0;
@@ -407,9 +408,19 @@ $MDELEV16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
   border-radius: 50%;
 }
 
+.md-nav-drawer .subcategory .badge-wrapper.box > .badge-category-parent-bg {
+  width: 12px;
+  border-radius: 24px 0 0 24px;
+}
+
+.md-nav-drawer .subcategory .badge-wrapper.box > .badge-category-bg {
+  width: 12px;
+  border-radius: 0 24px 24px 0;
+}
+
 .md-nav-drawer .category-link .badge-wrapper .badge-category {
   display: inline;
-  margin-left: 16px;
+  margin-left: 16px !important;
 }
 
 .md-nav-drawer .category-link .badge-wrapper i.d-icon,
