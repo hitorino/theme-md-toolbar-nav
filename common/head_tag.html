@@ -883,15 +883,39 @@ api.createWidget('md-topbar-menu', {
         this.state.isOpen = false;
         this.scheduleRerender();
     }
-});
-
-api.decorateWidget('home-logo:after', dec => {
-    return [
-        dec.h('a.md-topbar-link', {href: 'https://hitorino.moe'}, '首页'),
-        dec.h('a.md-topbar-link', {href: 'https://m.hitorino.moe'}, '微博客'),
-        dec.attach('md-topbar-menu')
-    ]
 })
+
+{
+    const oldLogo = require('discourse/widgets/home-logo')
+                        .default.prototype.logo
+
+    api.reopenWidget('home-logo', {
+        logo() {
+            const logoSmallUrl = this.smallLogoUrl();
+            if (this.attrs.minimized && logoSmallUrl.length) {
+                return h("img#site-logo.logo-small", {
+                    key: "logo-small",
+                    attributes: {
+                        src: Discourse.getURL(logoSmallUrl),
+                        width: 36,
+                        alt: title
+                    }
+                });
+            } else {
+                return oldLogo.apply(this, arguments);
+            }
+        }
+    })
+
+    api.decorateWidget('home-logo:after', dec => {
+        return [
+            dec.h('a.md-topbar-link', {href: 'https://hitorino.moe'}, '首页'),
+            dec.h('a.md-topbar-link', {href: 'https://m.hitorino.moe'}, '微博客'),
+            dec.attach('md-topbar-menu')
+        ]
+    })
+}
+
 
 </script>
 
