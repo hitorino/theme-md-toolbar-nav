@@ -87,7 +87,8 @@ api.createWidget('md-topbar-menu', {
 
     api.reopenWidget('home-logo', {
         logo() {
-            const logoSmallUrl = siteSettings.logo_small_url || ""
+            const mobileView = this.site.mobileView
+            const logoSmallUrl = this.siteSettings.logo_small_url || ""
             if (!mobileView && this.attrs.minimized && logoSmallUrl.length) {
                 return h("img#site-logo.logo-small", {
                     key: "logo-small",
