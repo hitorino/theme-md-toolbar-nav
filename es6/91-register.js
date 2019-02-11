@@ -87,8 +87,8 @@ api.createWidget('md-topbar-menu', {
 
     api.reopenWidget('home-logo', {
         logo() {
-            const logoSmallUrl = this.smallLogoUrl();
-            if (this.attrs.minimized && logoSmallUrl.length) {
+            const logoSmallUrl = siteSettings.logo_small_url || ""
+            if (!mobileView && this.attrs.minimized && logoSmallUrl.length) {
                 return h("img#site-logo.logo-small", {
                     key: "logo-small",
                     attributes: {
@@ -96,9 +96,9 @@ api.createWidget('md-topbar-menu', {
                         width: 36,
                         alt: title
                     }
-                });
+                })
             } else {
-                return oldLogo.apply(this, arguments);
+                return oldLogo.apply(this, arguments)
             }
         }
     })
