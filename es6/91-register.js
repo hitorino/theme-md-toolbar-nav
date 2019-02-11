@@ -94,8 +94,8 @@ api.createWidget('md-topbar-menu', {
                     key: "logo-small",
                     attributes: {
                         src: Discourse.getURL(logoSmallUrl),
-                        width: 36,
-                        alt: title
+                        width: 40,
+                        alt: this.siteSettings.title
                     }
                 })
             } else {
